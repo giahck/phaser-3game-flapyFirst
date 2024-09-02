@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+
 public class cvDto {
     /*private long id;*/
     private String nome;
