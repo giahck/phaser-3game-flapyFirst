@@ -1,0 +1,24 @@
+<div class="container-fluid m-0">
+  <div class="row d-flex justify-content-center mb-2">
+      <!-- Gioco -->
+      <div class="col-3 d-flex justify-content-end" *ngIf="visibilityGame">
+          <img *ngIf="selectedImageIndex !== null"
+            [src]="images[selectedImageIndex].src"
+               class="img-thumbnail " alt="Immagine selezionata" (click)="selectImage(selectedImageIndex)">
+      </div>
+      <div class="col-9 d-flex justify-content-center m-0" *ngIf="visibilityGame">
+        <div class="game-container container-fluid d-flex justify-content-center align-items-center m-0">
+          <!-- Il contenuto del gioco va qui -->
+        </div>
+      </div>
+  </div>
+
+  <div class="row">
+      <div *ngFor="let image of images; let i = index" 
+           class="col-3 image-container mb-3"
+           [hidden]="visibilityGame && selectedImageIndex === i">
+          <img [src]="image.src" class="img-thumbnail" alt="Immagine"
+               (click)="selectImage(i)"  >
+      </div>
+  </div>
+</div>

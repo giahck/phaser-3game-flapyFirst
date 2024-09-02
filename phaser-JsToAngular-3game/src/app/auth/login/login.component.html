@@ -1,0 +1,83 @@
+<div class="container" [ngClass]="{'right-panel-active': !isRightPanelActive}">
+    <div class="form-container sign-up-container">
+      <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+        <h1>Create Account</h1>
+        <div class="social-container">
+          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+          <a href="{{url}}" class="social"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <span>or use your email for registration</span>
+        <input type="text" formControlName="nome" placeholder="Nome" class="mb-1" />
+        <div class="error-container">
+          <div *ngIf="registerForm.get('nome')?.invalid && registerForm.get('nome')?.touched">
+            <small *ngIf="registerForm.get('nome')?.errors?.['required']">Nome is required</small>
+            <small *ngIf="registerForm.get('nome')?.errors?.['nome']">Invalid nome format</small>
+          </div>
+        </div>
+        <input type="text" formControlName="cognome" placeholder="Cognome" class="mb-1" />
+        <div class="error-container">
+          <div *ngIf="registerForm.get('cognome')?.invalid && registerForm.get('cognome')?.touched">
+            <small *ngIf="registerForm.get('cognome')?.errors?.['required']">Cognome is required</small>
+            <small *ngIf="registerForm.get('cognome')?.errors?.['cognome']">Invalid cognome format</small>
+          </div>
+        </div>
+        <input type="email" formControlName="email" placeholder="Email" class="mb-1"/>
+        <div class="error-container">
+          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <small *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</small>
+            <small *ngIf="registerForm.get('email')?.errors?.['email']">Invalid email format</small>
+          </div>
+        </div>
+        <input type="password" formControlName="password" placeholder="Password" class="mb-1"/>
+        <div class="error-container">
+          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <small *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</small>
+            <small *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</small>
+          </div>
+        </div>
+        <button type="submit">Sign In</button>
+      </form>
+    </div>
+    <div class="form-container sign-in-container">
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+        <h1>Sign in</h1>
+        <div class="social-container">
+          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+          <a href="{{url}}" class="social"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <span>or use your account</span>
+        <input type="email" formControlName="email" placeholder="Email" class="mb-1"/>
+        <div class="error-container">
+          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            <small *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</small>
+            <small *ngIf="loginForm.get('email')?.errors?.['email']">Invalid email format</small>
+          </div>
+        </div>
+        <input type="password" formControlName="password" placeholder="Password" class="mb-1"/>
+        <div class="error-container">
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <small *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</small>
+            <small *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</small>
+          </div>
+        </div>
+        <a href="#">Forgot your password?</a>
+        <button type="submit">Sign In</button>
+      </form>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Welcome Back!</h1>
+          <p>To keep connected with us please login with your personal info</p>
+          <button class="ghost" (click)="onSignIn()">Sign In</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Hello, Friend!</h1>
+          <p>Enter your personal details and start journey with us</p>
+          <button class="ghost" (click)="onSignUp()">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>

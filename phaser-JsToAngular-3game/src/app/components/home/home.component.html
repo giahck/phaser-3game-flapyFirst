@@ -1,0 +1,10 @@
+<div *ngIf="isAuthChecked">
+  <div *ngIf="user; else loginTemplate" class="container-fluid">
+    <app-phaser-game></app-phaser-game>
+  </div>
+  <ng-template #loginTemplate>
+    <div class="login-container">
+      <app-login></app-login>
+    </div>
+  </ng-template>
+</div>
