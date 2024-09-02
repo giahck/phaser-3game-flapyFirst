@@ -15,6 +15,7 @@
             <small *ngIf="registerForm.get('nome')?.errors?.['nome']">Invalid nome format</small>
           </div>
         </div>
+        
         <input type="text" formControlName="cognome" placeholder="Cognome" class="mb-1" />
         <div class="error-container">
           <div *ngIf="registerForm.get('cognome')?.invalid && registerForm.get('cognome')?.touched">
