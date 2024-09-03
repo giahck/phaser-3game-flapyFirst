@@ -3,9 +3,13 @@ const PIPES_TO_RENDER = 4;
 const score$ = new Phaser.Events.EventEmitter();
 class PlayScene extends BaseScene{
 
-    constructor(config) {
+    constructor(config,cv) {
         super('PlayScene',config);
-
+        this.cv = cv;
+        this.esperienzeFormazioni = [
+          ...this.cv.esperienze.map(item => ({ ...item, tipo: 'ESPERIENZA' })),
+          ...this.cv.formazioni.map(item => ({ ...item, tipo: 'FORMAZIONE' }))
+      ];
         this.bird = null;
         this.pipes = null;
         this.isPaused = false;
@@ -45,6 +49,7 @@ class PlayScene extends BaseScene{
     } */
 
     create(){
+      console.log(this.esperienzeFormazioni);
        /*  this.createBg(); */
        this.currentDifficulty = 'easy';
        super.create();
@@ -133,7 +138,7 @@ class PlayScene extends BaseScene{
    }
     createPipes(){
         this.pipes = this.physics.add.group();
-
+        this.texts = this.add.group();
         for(let i=0; i<PIPES_TO_RENDER; i++){
          const upperPipe = this.pipes.create(0, 0, 'pipe').setImmovable(true).setOrigin(0, 1);
          const lowerPipe = this.pipes.create(0, 0, 'pipe').setImmovable(true).setOrigin(0, 0);
@@ -151,7 +156,6 @@ class PlayScene extends BaseScene{
       this.isPaused = false;
       const pauseButton= this.add.image(this.config.width - 10, this.config.height-10,'pause').setInteractive().setScale(3).setOrigin(1)
       
-
       pauseButton.on('pointerdown', ()=>{
         this.isPaused = true;
         this.physics.pause();
@@ -168,10 +172,42 @@ class PlayScene extends BaseScene{
     }
     checkGameStatus(){
         if(this.bird.getBounds().bottom >=this.config.height || this.bird.y<=0){
+            
             this.gameOver();
         }
     }
-
+    viewCVcolide(){
+      const { nome, cognome, indirizzo,email,telefono } = this.cv;
+      // Crea un array con le righe di testo
+      const cvLines = [
+        `Nome: ${nome}`,
+        `Cognome: ${cognome}`,
+        `Indirizzo: ${indirizzo}`,
+        `email: ${email}`,
+        `Tel: ${telefono}`,
+      ];
+      
+      // Stile del testo
+      const textStyle = {
+        fontSize: '40px',
+        fill: '#FCF118', // Colore viola
+        fontWeight: 'bold',
+      };
+      
+      // Calcola la posizione di partenza per il testo centrato verticalmente
+      const startY = this.config.height / 2 - (cvLines.length * 40) / 2;
+      this.add.text(this.config.width / 2, 50, this.cv.titolo, {
+        fontSize: '50px',
+        fill: '#FCF118', // Colore viola
+        fontWeight: 'bold',
+        stroke: '#000',
+        strokeThickness: 4
+      }).setOrigin(0.5, 0);
+      // Aggiungi ogni riga di testo
+      cvLines.forEach((line, index) => {
+        this.add.text(this.config.width / 2, startY + index * 50, line, textStyle).setOrigin(0.5, 0.5);
+      });
+    }
 
     createColliders() {
         this.physics.add.collider(this.bird, this.pipes, this.gameOver, null, this);
@@ -188,6 +224,16 @@ class PlayScene extends BaseScene{
       
         lPipe.x = uPipe.x;
         lPipe.y = uPipe.y + pipeVerticalDisty; 
+        //esperienzeFormazioni
+        //visualizazzione dei dati
+        const textX = uPipe.x + uPipe.width + 100;
+        const textY = (uPipe.y);
+        const text = this.add.text(textX, textY, 'Scritte', {
+            fontSize: '32px',
+            fill: '#ffffff',
+            wordWrap: { width: pipeHorizontalDisty - 20 }
+        }).setOrigin(0.5, 0.5);
+        this.texts.add(text);
       }
      
     ricicloPipe() {
@@ -195,14 +241,18 @@ class PlayScene extends BaseScene{
         this.pipes.getChildren().forEach(pipe => {
           if(pipe.getBounds().right <= 0){
             temp.push(pipe);
+        //    console.log(temp);
             if(temp.length === 2){
               this.placePipe(...temp);
               this.increaseScore();
+
               this.increaseDifficulty();
-              
             }
           }
         });
+        this.texts.getChildren().forEach(text => {
+          text.x -= 200 * this.game.loop.delta / 1000; 
+      });
       }
       increaseDifficulty() {
         if (this.score === 5) {
@@ -240,8 +290,10 @@ class PlayScene extends BaseScene{
        /* this.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
        this.input.off('pointerdown', this.flap, this); */
        this.saveScore();
+       this.viewCVcolide();
+      
        this.time.addEvent({
-         delay: 1000,
+         delay: 5000,
          callback: ()=>{
               this.scene.restart();
             },
@@ -252,7 +304,7 @@ class PlayScene extends BaseScene{
         if (this.isPaused) { return; }
         this.bird.body.velocity.y = -this.flapVelocity;
       
-        console.log('flap')
+      //  console.log('flap')
       }
       increaseScore() {
         this.score++;
@@ -261,7 +313,7 @@ class PlayScene extends BaseScene{
       }
       subscribeToScore(){
         score$.on('update', score => {
-          console.log(`New Score: ${score}`);
+       //   console.log(`New Score: ${score}`);
           if (score > this.bestScore) {
             this.bestScoreText.setText(`Best score: ${score}`);
             this.bestScoreText.setFill('#ff0000');

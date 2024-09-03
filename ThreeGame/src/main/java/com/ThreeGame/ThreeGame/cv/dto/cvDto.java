@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class cvDto {
-    /*private long id;*/
+    private long id;
     private String nome;
     private String cognome;
     private String email;

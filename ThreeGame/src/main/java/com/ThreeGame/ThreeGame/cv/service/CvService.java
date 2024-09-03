@@ -29,10 +29,10 @@ public class CvService {
     public Cv saveCv(cvDto cvDto) {
         try {
             Cv cv = cvMapper.toEntity(cvDto);
-            //Users user = userRepository.findById(cvDto.getId()).orElseThrow(() -> new RuntimeException("Utente non trovato"));
-           /* cv.setUsers(user);
+            Users user = userRepository.findById((int) cvDto.getId()).orElseThrow(() -> new RuntimeException("Utente non trovato"));
+            cv.setUsers(user);
             cv.getEsperienze().forEach(esperienza -> esperienza.setCv(cv));
-            cv.getFormazioni().forEach(formazione -> formazione.setCv(cv));*/
+            cv.getFormazioni().forEach(formazione -> formazione.setCv(cv));
             return cvRepository.save(cv);
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new RuntimeException("Conflitto di aggiornamento: " + e.getMessage(), e);
@@ -44,8 +44,9 @@ public class CvService {
                 .map(cvMapper::toDto)
                 .toList();
     }
-    public cvDto findById(Long id) {
-        Cv cv = cvRepository.findById(id).orElse(null);
+    public cvDto findByUserId(Long userId) {
+        Users user = userRepository.findById(Math.toIntExact(userId)).orElseThrow(() -> new RuntimeException("Utente non trovato"));
+        Cv cv = user.getCv();
         return cvMapper.toDto(cv);
     }
 

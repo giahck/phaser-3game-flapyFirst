@@ -21,16 +21,20 @@ export class TokenInterceptor implements HttpInterceptor {
             take(1),
             switchMap(user => {
                 if (user) {
+                    // Assicurati di non aggiungere più volte l'intestazione
                     const newReq = request.clone({
-                        headers: request.headers.append('Authorization', `Bearer ${user.accessToken}`)
+                        setHeaders: {
+                            Authorization: `Bearer ${user.accessToken}`
+                        }
                     });
+                  //  console.log('Request with token:', newReq);
                     return next.handle(newReq);
                 } else {
-                    console.log("newReq");
+                    //console.log('No user, proceeding without token.');
                     return next.handle(request);
                 }
             })
         );
-        
     }
+
 }

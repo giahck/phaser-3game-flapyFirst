@@ -10,10 +10,10 @@
       </svg>
     </label>
     <ul class="menu__content">
-      <li class="menu__item" style="--x: 25; --y: 19;"><a class="menu__link" href="#HOME">HOME</a></li>
-      <li class="menu__item" style="--x: 58; --y: 26;"><a class="menu__link" href="#ABOUT">ABOUT</a></li>
-      <li class="menu__item" style="--x: 15; --y: 58;"><a class="menu__link" href="#CONTACT">CONTACT</a></li>
-      <li class="menu__item" style="--x: 65; --y: 52;"><a class="menu__link" href="#WORK">WORK</a></li>
+      <li class="menu__item" style="--x: 25; --y: 19;"><a class="menu__link" [routerLink]="['/phaser-game']" routerLinkActive="active" (click)="closeMenu()">GAME</a></li>
+      <li class="menu__item" style="--x: 58; --y: 26;"><a class="menu__link" [routerLink]="['/home']" (click)="closeMenu()">HOME</a></li>
+      <li class="menu__item" style="--x: 15; --y: 58;"><a class="menu__link" [routerLink]="['/cv']" (click)="closeMenu()">CV</a></li>
+      <li class="menu__item" style="--x: 65; --y: 52;"><a class="menu__link" href="#WORK" (click)="closeMenu()" >WORK</a></li>
       <li class="menu__item" style="--x: 80; --y: 30;"><a class="menu__link" (click)="logout()">LOGOUT</a></li>
     </ul>
   </nav>

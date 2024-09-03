@@ -14,30 +14,27 @@ const SHARED_CONFIG = {
   startPosition: BIRD_POSITION,
   
 }
-const Scenes = [PreloadScene, MenuScene,ScoreScene, PlayScene,PauseScene,];
-const createScenes = Scene=> new Scene(SHARED_CONFIG);
-const initScenes = () => Scenes.map(createScenes);
+const Scenes = [PreloadScene, MenuScene, ScoreScene, PlayScene, PauseScene];
+const createScenes = (Scene, cv) => new Scene(SHARED_CONFIG, cv);
+const initScenes = (cv) => Scenes.map(Scene => createScenes(Scene, cv));
 
 let gameInstance = null;
-export function initializeGame(container) {
+export function initializeGame(container, cv) {
   cleanupGame();
   const config = {
-    type: Phaser.AUTO,//auto rendrerer 2d o 3d grafica
+    type: Phaser.AUTO, // auto renderer 2D o 3D grafica
     parent: container,
     pixelArt: true,
     ...SHARED_CONFIG,
     physics: {
       default: 'arcade',
       arcade: {
-       /*  gravity: { y: 400 }, */
-       /*  gravity: { x: 200 }, */
         debug: true
       }
     },
-    scene:initScenes()
+    scene: initScenes(cv)
   };
-  gameInstance=new Phaser.Game(config);
-  
+  gameInstance = new Phaser.Game(config);
 }
 export function cleanupGame() {
   if (gameInstance) {

@@ -5,6 +5,7 @@ import com.ThreeGame.ThreeGame.cv.entity.Cv;
 import com.ThreeGame.ThreeGame.cv.service.CvService;
 import com.ThreeGame.ThreeGame.exeptions.exeptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,13 @@ public class CvController {
         }
         return cvService.saveCv(cv);
     }
-    @GetMapping("/cv/all")
+    @GetMapping("/all")
     public List<cvDto> findAll() {
         return cvService.findAll();
+    }
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/{id}")
+    public cvDto findById(@PathVariable Long id) {
+        return cvService.findByUserId(id);
     }
 }

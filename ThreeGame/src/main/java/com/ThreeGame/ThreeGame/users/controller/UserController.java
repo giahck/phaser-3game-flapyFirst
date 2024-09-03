@@ -6,6 +6,7 @@ import com.ThreeGame.ThreeGame.users.dto.LoginDto;
 import com.ThreeGame.ThreeGame.users.dto.LoginRDto;
 import com.ThreeGame.ThreeGame.users.dto.RegisterUserDto;
 import com.ThreeGame.ThreeGame.users.service.UserService;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,11 +41,20 @@ public class UserController {
     }
 
     @GetMapping("/validate-token")
-    public LoginRDto validateToken(@RequestHeader("Authorization") String token) {
-        token = token.replace("Bearer ", "");
-        jwtTool.verifyToken(token);
-        String id = jwtTool.getIdFromToken(token);
-        return userService.getVerifyToken(Integer.parseInt(id), token);
+    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
+        try {
+            token = token.replace("Bearer ", "");
 
+            jwtTool.verifyToken(token);
+            String id = jwtTool.getIdFromToken(token);
+            LoginRDto loginRDto = userService.getVerifyToken(Integer.parseInt(id), token);
+            return ResponseEntity.ok(loginRDto);
+        } catch (JwtException e) {
+            // Specifico per errori JWT
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token non valido: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestisce altri errori
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la validazione: " + e.getMessage());
+        }
     }
 }

@@ -24,6 +24,10 @@ export class AuthService {
     private router: Router
   ) {}
 
+  getId(): number | null{
+    const user=this.authSub.getValue();
+    return user ? user.id : null;
+  }
   get(url: string): Observable<any> {
     return this.http.get("http://localhost:8080" + url);
   }
@@ -92,6 +96,7 @@ export class AuthService {
 
   autoLogout(user: AuthData | null) {
     if (user && this.isJwt(user.accessToken)) {
+    //  console.log('Auto logout:', user);
       const expirationDate = this.jwtHelper.getTokenExpirationDate(user.accessToken) as Date;
       const millisecondsExp = expirationDate.getTime() - new Date().getTime();
       this.timeOut = setTimeout(() => this.logout(), millisecondsExp);
@@ -100,34 +105,36 @@ export class AuthService {
     }
   }
 
-  restoreAuth(): void {
+  async restoreAuth(): Promise<void> {
     const accessToken = localStorage.getItem('accessToken') || this.cookieService.get('accessToken');
-
     if (accessToken && this.isJwt(accessToken) && !this.jwtHelper.isTokenExpired(accessToken)) {
-      this.validateToken(accessToken);
+      try {
+        await this.validateToken(accessToken);
+      } catch (error) {
+        console.warn('Errore durante la validazione del token:', error);
+      }
     } else {
       console.warn('Token non JWT rilevato o token scaduto');
       this.authChecked$.next(true);
     }
   }
 
-  private validateToken(token: string) {
+  private async validateToken(token: string): Promise<void> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get<AuthData>(`${this.apiURL}auth/validate-token`, { headers }).pipe(
-      tap((dataResponse: AuthData) => {
-        if (dataResponse && dataResponse.accessToken) {
-          this.authSub.next(dataResponse);
-          this.autoLogout(dataResponse);
-        }
-        this.authChecked$.next(true);
-      }),
-      catchError(error => {
-        console.error('Token non valido o errore durante la validazione:', error);
-        this.removeToken();
-        this.authChecked$.next(true);
-        return throwError(error);
-      })
-    ).subscribe();
+    try {
+      const dataResponse = await this.http.get<AuthData>(`${this.apiURL}auth/validate-token`, { headers }).toPromise();
+      if (dataResponse && dataResponse.accessToken) {
+        this.authSub.next(dataResponse);
+        this.autoLogout(dataResponse);
+       // console.log('Token valido:', dataResponse);
+      }
+      this.authChecked$.next(true);
+    } catch (error) {
+      console.error('Token non valido o errore durante la validazione:', error);
+      this.removeToken();
+      this.authChecked$.next(true);
+      throw error;
+    }
   }
 
   logout(): void {

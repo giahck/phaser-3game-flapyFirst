@@ -16,7 +16,7 @@ class PauseScene extends BaseScene {
     }
     setupMenuEvents(menuItem){
         const textGameO= menuItem.textGameO;
-        console.log(textGameO);
+       // console.log(textGameO);
           textGameO.setInteractive();
 
        textGameO.on('pointerover',()=>{

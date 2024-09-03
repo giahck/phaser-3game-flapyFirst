@@ -1,7 +1,7 @@
 
 import BaseScene from './BaseScene';
 class MenuScene extends BaseScene {
-    constructor(config) {
+    constructor(config,cv) {
       super('MenuScene',config);
       this.menu=[
         {scene: 'PlayScene', text: 'Play'},

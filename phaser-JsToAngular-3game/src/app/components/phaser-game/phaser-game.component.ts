@@ -2,6 +2,9 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { cleanupGame, initializeGame } from './js/game';
 import {  cleanupGameDino, initializeGameDino } from './jsDino/gameDino';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { Cv } from '../../models/cv/cv.interface';
+import { CvService } from '../../service/cv.service';
 @Component({
   selector: 'app-phaser-game',
   standalone: true,
@@ -10,6 +13,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./phaser-game.component.scss']
 })
 export class PhaserGameComponent implements OnInit,AfterViewInit {
+  cvSubscription!: Subscription;
+  cv:Cv[]=[];
   visibilityGame = true;
   imageClicked = false;
  
@@ -25,10 +30,16 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
       
       // Aggiungi altre immagini qui
   ];
-  constructor() { }
+  constructor(private cvSrv:CvService) { }
 
   ngOnInit(): void {
-    // Eventuali inizializzazioni necessarie
+    this.cvSrv.getCV();
+    this.cvSubscription=this.cvSrv.cvUser$.subscribe(
+      (cv)=>{
+        this.cv=cv;
+       // console.log(this.cv);
+      }
+    );
   }
 
   selectImage(index: number): void {
@@ -56,7 +67,7 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
   initializeSelectedGame(container: HTMLElement, game: string): void {
     
     if (game === 'initializeGame') {
-      initializeGame(container);
+      initializeGame(container,this.cv);
     } else if (game === 'initializeGameDino') {
       initializeGameDino(container);
     }
@@ -76,10 +87,12 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
     // Seleziona l'elemento con la classe 'game-container'
     const gameContainer = document.querySelector('.game-container')as HTMLElement;
     if (gameContainer) {
-      // Inizializza il gioco all'interno dell'elemento selezionato
-      initializeGameDino(gameContainer);
-    }
+      // Imposta un timer di 1 secondo prima di inizializzare il gioco
+      setTimeout(() => {
+        // Inizializza il gioco all'interno dell'elemento selezionato
+        initializeGame(gameContainer, this.cv);
+      }, 500);
   }
-}
+}}
 
 
