@@ -1,22 +1,21 @@
-import Phaser from 'phaser';
-import PlayScene from './scenes/PlayScene';
-import MenuScene from './scenes/MenuScene';
-import ScoreScene from './scenes/ScoreScene';
-import PreloadScene from './scenes/PreloadScene';
-import PauseScene from './scenes/PauseScene';
-import { pipe } from 'rxjs';
+import Phaser from "phaser";
+import PlayScene from "./scenes/PlayScene";
+import MenuScene from "./scenes/MenuScene";
+import ScoreScene from "./scenes/ScoreScene";
+import PreloadScene from "./scenes/PreloadScene";
+import PauseScene from "./scenes/PauseScene";
+import { pipe } from "rxjs";
 const WIDTH = window.innerWidth < 600 ? 400 : 800;
 const HEIGHT = 600;
-const BIRD_POSITION = {x: WIDTH * 0.1, y: HEIGHT / 2 };
+const BIRD_POSITION = { x: WIDTH * 0.1, y: HEIGHT / 2 };
 const SHARED_CONFIG = {
   width: WIDTH,
   height: HEIGHT,
   startPosition: BIRD_POSITION,
-  
-}
+};
 const Scenes = [PreloadScene, MenuScene, ScoreScene, PlayScene, PauseScene];
 const createScenes = (Scene, cv) => new Scene(SHARED_CONFIG, cv);
-const initScenes = (cv) => Scenes.map(Scene => createScenes(Scene, cv));
+const initScenes = (cv) => Scenes.map((Scene) => createScenes(Scene, cv));
 
 let gameInstance = null;
 export function initializeGame(container, cv) {
@@ -27,24 +26,24 @@ export function initializeGame(container, cv) {
     pixelArt: true,
     ...SHARED_CONFIG,
     physics: {
-      default: 'arcade',
+      default: "arcade",
       arcade: {
-        debug: true
-      }
+        //  debug: true
+      },
     },
-    scene: initScenes(cv)
+    scene: initScenes(cv),
   };
   gameInstance = new Phaser.Game(config);
 }
 export function cleanupGame() {
   if (gameInstance) {
-    console.log('cleanupGame');
+    //console.log("cleanupGame");
     gameInstance.destroy(true);
     gameInstance = null;
   }
 }
 
- /* const VELOCITY = 200; 
+/* const VELOCITY = 200; 
  const PIPES_TO_RENDER = 4;
   let bird = null;
   let pipes = null;
@@ -79,9 +78,9 @@ let pipeHorizontalDisty=0;
   }
   pipes.setVelocityX(-200);
  */
-  
-   // bird.body.velocity.x = VELOCITY; 
-  /*  this.input.on('pointerdown', flap);
+
+// bird.body.velocity.x = VELOCITY;
+/*  this.input.on('pointerdown', flap);
    let spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   spaceBar.on('down', flap);
   }
@@ -134,9 +133,8 @@ return rightMostX;
    // bird.body.gravity.y = 200;
     console.log('flap')
   } */
- /*  new Phaser.Game(config);
+/*  new Phaser.Game(config);
 } */
-
 
 /*  function update(time,delta) {//sotto
     if (bird.y >= config.height - bird.height-10) {
