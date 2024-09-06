@@ -21,6 +21,7 @@ let gameInstance = null;
 export function initializeGame(container, cv) {
   cleanupGame();
   const config = {
+    
     type: Phaser.AUTO, // auto renderer 2D o 3D grafica
     parent: container,
     pixelArt: true,
@@ -33,6 +34,7 @@ export function initializeGame(container, cv) {
     },
     scene: initScenes(cv),
   };
+
   gameInstance = new Phaser.Game(config);
 }
 export function cleanupGame() {

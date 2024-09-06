@@ -50,7 +50,7 @@ export class AuthService {
               }).subscribe((messageResponse: HttpResponse<AuthData>) => {
                 if (messageResponse.body) {
                   this.authSub.next(messageResponse.body);
-                  messageResponse.body.accessToken = idToken;
+                  messageResponse.body.accessToken = accessToken;
                   this.autoLogout(messageResponse.body);
                 } else {
                   console.error('Message response body is null.');

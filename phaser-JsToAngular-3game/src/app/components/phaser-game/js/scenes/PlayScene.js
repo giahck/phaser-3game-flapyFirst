@@ -1,15 +1,15 @@
 import BaseScene from "./BaseScene";
-const PIPES_TO_RENDER = 4;
+let PIPES_TO_RENDER = 4;
 const score$ = new Phaser.Events.EventEmitter();
 class PlayScene extends BaseScene {
   constructor(config, cv) {
     super("PlayScene", config);
-    this.cv = cv;
+  //  cv=[]
+    this.cv = cv || { esperienze: [], formazioni: [] };
     this.esperienzeFormazioni = [
-      ...this.cv.esperienze.map((item) => ({ ...item, tipo: "ESPERIENZA" })),
-      ...this.cv.formazioni.map((item) => ({ ...item, tipo: "FORMAZIONE" })),
+      ...(this.cv.esperienze ? this.cv.esperienze.map((item) => ({ ...item, tipo: "ESPERIENZA" })) : []),
+      ...(this.cv.formazioni ? this.cv.formazioni.map((item) => ({ ...item, tipo: "FORMAZIONE" })) : []),
     ];
-
     this.bird = null;
     this.pipes = null;
     this.isPaused = false;
@@ -49,7 +49,10 @@ class PlayScene extends BaseScene {
     } */
 
   create() {
-    this.prevTextdiferent = Math.abs(this.esperienzeFormazioni.length - 1 - 7); //7 é la dificolta normal
+    if (this.esperienzeFormazioni.length >= 2) {
+      PIPES_TO_RENDER = this.esperienzeFormazioni.length;
+    }
+    this.prevTextdiferent = Math.abs(this.esperienzeFormazioni.length - 1 - 6); //7 é la dificolta normal
     this.isGameRunning = true;
     /*  this.createBg(); */
     this.currentDifficulty = "easy";
@@ -146,7 +149,7 @@ class PlayScene extends BaseScene {
   createPipes() {
     this.pipes = this.physics.add.group();
     this.texts = this.add.group();
-    for (let i = 0; i < this.esperienzeFormazioni.length-1; i++) {
+    for (let i = 0; i < PIPES_TO_RENDER; i++) {
       const upperPipe = this.pipes
         .create(0, 0, "pipe")
         .setImmovable(true)
@@ -264,7 +267,7 @@ class PlayScene extends BaseScene {
     lPipe.x = uPipe.x;
     lPipe.y = uPipe.y + pipeVerticalDisty;
     //visualizazzione dei dati cv.
-    if (this.prevTextdiferent >= 0) {
+    if (this.prevTextdiferent >= 0&& this.esperienzeFormazioni.length > 0) {
       if (i === undefined) {
         i = Math.floor(Math.random() * this.esperienzeFormazioni.length);
       }
@@ -319,6 +322,11 @@ class PlayScene extends BaseScene {
       //console.log("normal");
       this.currentDifficulty = "normal";
     }
+    if (this.score === 8) {
+      //console.log("normal");
+      this.currentDifficulty = "normal";
+      this.pipes.setVelocityX(-200);
+    }
 
     if (this.score === 12) {
       this.currentDifficulty = "hard";
@@ -352,6 +360,7 @@ class PlayScene extends BaseScene {
     /* this.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
        this.input.off('pointerdown', this.flap, this); */
     this.saveScore();
+    if (this.esperienzeFormazioni.length > 0) 
     this.viewCVcolide();
     this.isGameRunning = false;
     this.time.addEvent({

@@ -1,13 +1,14 @@
 export interface Cv {
     id: number;
-    nome: string;
     cognome: string;
+    nome: string;
     email: string;
     telefono: string;
     indirizzo: string;
     titolo: string;
     esperienze: Esperienza[];
     formazioni: Formazione[];
+    [key: string]: any;
   }
   
   export interface Esperienza {
