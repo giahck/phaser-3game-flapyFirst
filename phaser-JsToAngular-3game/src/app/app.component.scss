@@ -1,4 +1,11 @@
-.body{
-    min-height: 10vh;
-    position: relative;
+.container {
+    display: flex;
+    flex-direction: row; /* Dispone gli elementi in una riga */
+    justify-content: space-between; /* Distribuisce lo spazio tra gli elementi */
+    align-items: center; /* Allinea gli elementi verticalmente al centro */
+    height: 100vh; /* Imposta l'altezza del contenitore al 100% dell'altezza della finestra */
+}
+ .content {
+    flex: 1; /* Permette agli elementi di crescere e riempire lo spazio disponibile */
+    padding: 15px; /* Aggiunge un po' di spazio interno */
 }

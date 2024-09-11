@@ -23,14 +23,11 @@ export class CvService {
   }
   async getCV(): Promise<void> {
     if (this.isLoaded) {
-      // Se i dati sono già caricati, non fare un'altra chiamata
       return;
     }
-
-    // Aspetta che l'autenticazione sia completata
     await this.user.restoreAuth();
 
-    const userId = this.user.getId();
+    const userId = this.user.getId;
     if (!userId) {
       console.error('User ID is null');
       return;

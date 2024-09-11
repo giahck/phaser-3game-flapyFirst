@@ -20,27 +20,45 @@ export class CvImplementation implements Cv {
     instance.indirizzo = dto.indirizzo || '';
     instance.titolo = dto.titolo || '';
     
-    // Gestisci casi in cui esperienze e formazioni potrebbero essere undefined o null
-    instance.esperienze = Array.isArray(dto.esperienze)
-      ? dto.esperienze.map(exp => ({
-          nome: exp.nome || '',
-          luogo: exp.luogo || '',
-          dataInizio: exp.dataInizio ? new Date(exp.dataInizio) : new Date(),
-          dataFine: exp.dataFine ? new Date(exp.dataFine) : new Date(),
-          descrizione: exp.descrizione || ''
-        }))
-      : [];
-      console.log(instance.esperienze);
+    // Gestisci casi in cui esperienze e formazioni potrebbero essere undefined o null   
+    instance.esperienze = Array.isArray(dto.esperienze) && dto.esperienze.length > 0
+    ? dto.esperienze.map(exp => ({
+        nome: exp.nome || '',
+        luogo: exp.luogo || '',
+        dataInizio: exp.dataInizio ? new Date(exp.dataInizio) : null,
+        dataFine: exp.dataFine ? new Date(exp.dataFine) : null,
+        descrizione: exp.descrizione || ''
+      }))
+    : [];
+ /*    if (instance.esperienze.length === 0) {
+      instance.esperienze.push({
+        nome: '',
+        luogo: '',
+        dataInizio: null,
+        dataFine: null,
+        descrizione: ''
+      });
+    } */
+    
+    instance.formazioni = Array.isArray(dto.formazioni) && dto.formazioni.length > 0
+    ? dto.formazioni.map(exp => ({
+        nome: exp.nome || '',
+        luogo: exp.luogo || '',
+        dataInizio: exp.dataInizio ? new Date(exp.dataInizio) : null,
+        dataFine: exp.dataFine ? new Date(exp.dataFine) : null,
+        descrizione: exp.descrizione || ''
+      }))
+    : [];
+/*     if (instance.formazioni.length === 0) {
+      instance.formazioni.push({
+        nome: '',
+        luogo: '',
+        dataInizio: null,
+        dataFine: null,
+        descrizione: ''
+      });
+    } */
 
-    instance.formazioni = Array.isArray(dto.formazioni)
-      ? dto.formazioni.map(form => ({
-          nome: form.nome || '',
-          luogo: form.luogo || '',
-          dataInizio: form.dataInizio ? new Date(form.dataInizio) : new Date(),
-          dataFine: form.dataFine ? new Date(form.dataFine) : new Date(),
-          descrizione: form.descrizione || ''
-        }))
-      : [];
 
     return instance;
   }
