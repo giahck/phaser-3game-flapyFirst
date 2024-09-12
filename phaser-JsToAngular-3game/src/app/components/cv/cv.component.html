@@ -61,7 +61,7 @@
                   </div>
                 </div>
               </div>
-              <button  class="vertical-text" type="button" [disabled]="this.attributesEsperienza.length===0" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="cancellaEsperienza()">CANCELLA</button>
+              <button  class="input-empty vertical-text" type="button"   (click)="cancellaEsperienza()">CANCELLA</button>
             </div>
             <div  class="d-flex justify-content-center mt-3">
               <button type="button" class="input-empty" (click)="backBlockEsp()">back</button>
@@ -103,7 +103,7 @@
                 </div>
               </div>
               
-              <button class="vertical-text" type="button" [disabled]="!form.valid && this.cv.esperienze.length === this.attributesEsperienza.length" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="cancellaFormazzione()">CANCELLA</button>
+              <button class="input-empty vertical-text" type="button"   (click)="cancellaFormazzione()">CANCELLA</button>
             </div>
             
             <div  class="d-flex justify-content-center mt-3">
@@ -114,23 +114,33 @@
         </div>
       </div>
       <div class="col-12 col-md-5 col-lg-6 col-xxl-5 d-flex align-items-stretch ">
-        <div class="mx-1 containerControll w-100  ">
+        <div class="mx-1 containerControll w-100 py-1 ">
           <div class="p-4 overflow-container">
-            <h2>Contatti Personali</h2>
-            <div *ngFor="let item of attributesPersonal">
-              {{item.nome}}: {{item.value}}
-            </div>
-            <div *ngFor="let item of attributesEsperienza; let i=index">
-              <h2>Esperienze Lavorative {{i+1}}</h2>
-              <div *ngFor="let key of item">
-                {{key.nome}}: {{key.value}}
+            <h2 id="personal-section" class="text-center">Contatti Personali</h2>
+            <div class="border border-1 p-1 input-empty mb-3">
+              <div  *ngFor="let item of attributesPersonal" (click)="previewControlClicked('personal',0)">
+                {{item.nome}}: {{item.value}}
               </div>
             </div>
-            <div *ngFor="let item of attributesFormazione; let i=index">
-              <h2>Formazione {{i+1}}</h2>
-              <div *ngFor="let key of item">
-                {{key.nome}}: {{key.value}}
+            <div class="mb-3" id="esp-section">
+            <div *ngFor="let item of attributesEsperienza; let i=index" (click)="previewControlClicked('esp',i)">
+              <h2 class="text-center" >Esperienze Lavorative {{i+1}}</h2>
+              <div class="border border-1 p-1 input-empty">
+                <div *ngFor="let key of item">
+                  {{key.nome}}: {{key.value}}
+                </div>
               </div>
+            </div>
+          </div> 
+          <div class="mb-3" id="form-section">
+            <div  *ngFor="let item of attributesFormazione; let i=index" (click)="previewControlClicked('form',i)">
+              <h2 class="text-center">Formazione {{i+1}}</h2>
+              <div class="border border-1 p-1 input-empty">
+                <div *ngFor="let key of item">
+                  {{key.nome}}: {{key.value}}
+                </div>
+              </div>
+              </div> 
             </div>
           </div>
         </div>

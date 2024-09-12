@@ -2,6 +2,8 @@ package com.ThreeGame.ThreeGame.users.entity;
 
 import com.ThreeGame.ThreeGame.cv.entity.Cv;
 import com.ThreeGame.ThreeGame.users.enums.Ruolo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,11 +24,13 @@ public class Users implements UserDetails {
     private String nome;
     @Column(nullable = false, unique = true)
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Boolean enabled;
     private Boolean rememberMe;
 
     @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Cv cv;
     @Enumerated(EnumType.STRING)
     private Ruolo ruolo;
