@@ -41,6 +41,8 @@ e la ridondanza di dati, il tasto cancela elimina l'elemento corrente e se non c
 in modo che se io cambio vado nel persona o nella formazione nel caso fossi in esperienza non ho un oggetto vuoto da rispedire nel back e ho controlli dimeno da fare
 ed la logica diventa piú pulita
 )*/
+
+
 export class CvComponent implements OnInit {
   cvSubscription!: Subscription;
   cv!: CvImplementation;
