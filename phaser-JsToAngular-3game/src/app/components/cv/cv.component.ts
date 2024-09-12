@@ -73,6 +73,7 @@ export class CvComponent implements OnInit {
     });
   }
   
+  
   private initializeAttributes(): void {
     this.attributesPersonal = this.convertToAttributes(this.cv, ['id', 'esperienze', 'formazioni']);
     this.attributesEsperienza = this.cv.esperienze.map(exp => this.convertToAttributes(exp));
