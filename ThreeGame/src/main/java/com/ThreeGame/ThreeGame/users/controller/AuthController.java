@@ -22,7 +22,7 @@ import java.util.Arrays;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-
+/*ddd*/
     @Value("${spring.security.oauth2.resourceserver.opaque-token.client-id}")
     private String clientId;
 
@@ -41,6 +41,8 @@ public class AuthController {
 
         return ResponseEntity.ok(new UrlDto(url));
     }
+
+
 
     @GetMapping("/auth/callback")
     public ResponseEntity<TokenDto> callback(@RequestParam("code") String code) throws URISyntaxException {
