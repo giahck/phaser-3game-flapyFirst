@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit,OnDestroy {
       rememberMe: [false],
     });
 
-    this.authSrv.get("auth/url").subscribe((data: any) => this.url = data.authURL);
+    this.authSrv.get("/auth/url").subscribe((data: any) => this.url = data.authURL);
    
   }
   onLoginSubmit(): void {

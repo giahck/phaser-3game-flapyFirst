@@ -14,7 +14,7 @@ import { CvService } from '../../service/cv.service';
 })
 export class PhaserGameComponent implements OnInit,AfterViewInit {
   cvSubscription!: Subscription;
-  cv!:Cv;
+  cv:Cv[]=[];
   visibilityGame = true;
   imageClicked = false;
  
@@ -88,10 +88,8 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
     const gameContainer = document.querySelector('.game-container')as HTMLElement;
     if (gameContainer) {
       // Imposta un timer di 1 secondo prima di inizializzare il gioco
-      console.log(this.cv);
       setTimeout(() => {
         // Inizializza il gioco all'interno dell'elemento selezionato
-        console.log(this.cv);
         initializeGame(gameContainer, this.cv);
       }, 500);
   }
