@@ -22,14 +22,15 @@
               </div>
             </div>
             <div  class="d-flex justify-content-center mt-3">
-              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}">Submit</button>
+              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}">Nǝxt</button>
             </div>
           </form>
         </div>
-        <div *ngIf="switches.form" >
+        <div *ngIf="switches.esp" >
           <h2 class="text-center">Esperienza {{countAttributesEsperienza+1}}</h2>
           <form #form="ngForm" (ngSubmit)="onPersonalEsperienza(form)">
             <div class="row-cols-12 d-flex justify-content-center">
+              <button class="vertical-text" type="button" [disabled]="!form.valid && this.cv.esperienze.length === this.attributesEsperienza.length" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="addEsperienza(form)">AGGIUNGI</button>
               <div class="d-flex flex-column input-container">
                 <div ngfor>
                   <div *ngFor="let item of attributesEsperienza[countAttributesEsperienza];">
@@ -60,55 +61,54 @@
                   </div>
                 </div>
               </div>
+              <button  class="vertical-text" type="button" [disabled]="this.attributesEsperienza.length===0" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="cancellaEsperienza()">CANCELLA</button>
             </div>
             <div  class="d-flex justify-content-center mt-3">
-              <button type="submit" [disabled]="!form.valid"  [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >save</button>
-              <button type="button" [ngClass]="{'input-empty': this.attributesEsperienza.length !== 0 &&this.cv.esperienze.length !== 0, 'input-filled': this.cv.esperienze.length === 0}" (click)="cancellaEsperienza()">Cancella</button>
-              <button type="button"   [disabled]="!form.valid " [ngClass]="{'input-empty': form.valid && this.countAttributesEsperienza===this.cv.esperienze.length-1, 'input-filled': !form.valid || this.countAttributesEsperienza!==this.cv.esperienze.length-1}" (click)="addEsperienza(form)">Add</button>
-              <button type="button"   (click)="nextBlock()">next</button>
-              <button type="button"   (click)="backBlock()">back</button>
+              <button type="button" class="input-empty" (click)="backBlockEsp()">back</button>
+              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >next</button>
             </div>
           </form>
         </div>
-        <div *ngIf="switches.esp" >
+        <div *ngIf="switches.form" >
           <h2 class="text-center">Formazione {{countAttributesFormazione+1}}</h2>
           <form #form="ngForm" (ngSubmit)="onPersonalFormazione(form)">
-            <div class="row-cols-12 d-flex justify-content-center mt-5">
+            <div class="row-cols-12 d-flex justify-content-center">
+              <button class="vertical-text" type="button" [disabled]="!form.valid && this.cv.esperienze.length === this.attributesEsperienza.length" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="addFormazione(form)">AGGIUNGI</button>
               <div class="d-flex flex-column input-container">
-                <div ngfor>
-                  <div *ngFor="let item of attributesFormazione[countAttributesFormazione];">
-                    <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
-                      {{ item.nome | uppercase }}
-                    </label>
-                    <input
-                    *ngIf="item.nome === 'dataInizio' || item.nome === 'dataFine'"
-                    id="{{item.nome}}"
-                    type="date"
-                    [(ngModel)]="item.value"
-                    name="{{item.nome}}"
-                    [placeholder]="item.nome | uppercase"
-                    class="mb-1 inputForm"
-                    ngModel required
-                    />
-                    
-                    <input
-                    *ngIf="item.nome !== 'dataInizio' && item.nome !== 'dataFine'"
-                    id="{{item.nome}}"
-                    type="text"
-                    [(ngModel)]="item.value"
-                    name="{{item.nome}}"
-                    [placeholder]="item.nome | uppercase"
-                    class="mb-1 inputForm"
-                    ngModel required
-                    />
-                  </div>
+                <div *ngFor="let item of attributesFormazione[countAttributesFormazione];">
+                  <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
+                    {{ item.nome | uppercase }}
+                  </label>
+                  <input
+                  *ngIf="item.nome === 'dataInizio' || item.nome === 'dataFine'"
+                  id="{{item.nome}}"
+                  type="date"
+                  [(ngModel)]="item.value"
+                  name="{{item.nome}}"
+                  [placeholder]="item.nome | uppercase"
+                  class="mb-1 inputForm"
+                  ngModel required
+                  />
+                  
+                  <input
+                  *ngIf="item.nome !== 'dataInizio' && item.nome !== 'dataFine'"
+                  id="{{item.nome}}"
+                  type="text"
+                  [(ngModel)]="item.value"
+                  name="{{item.nome}}"
+                  [placeholder]="item.nome | uppercase"
+                  class="mb-1 inputForm"
+                  ngModel required
+                  />
                 </div>
-                
               </div>
+              
+              <button class="vertical-text" type="button" [disabled]="!form.valid && this.cv.esperienze.length === this.attributesEsperienza.length" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="cancellaFormazzione()">CANCELLA</button>
             </div>
+            
             <div  class="d-flex justify-content-center mt-3">
-              <button type="submit" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >save</button>
-              <button type="button"   [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" (click)="addFormazione()">Add</button>
+              <button type="button" class="input-empty" (click)="backBlockForm()">back</button>
+              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >next</button>
             </div>
           </form>
         </div>
@@ -134,16 +134,17 @@
             </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
-      <!-- <div class="container"></div>
-      <h2>Inserisci i dati del CV</h2>
-      <form #cvForm="ngForm" (ngSubmit)="onSubmit(cvForm)">
-        <div class="form-group">
-          <label for="nome">Nome:</label>
-          <input type="text" id="nome" name="nome" class="form-control" ngModel required>
-        </div>
+</div>
+    
+    <!-- <div class="container"></div>
+    <h2>Inserisci i dati del CV</h2>
+    <form #cvForm="ngForm" (ngSubmit)="onSubmit(cvForm)">
+      <div class="form-group">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" class="form-control" ngModel required>
+      </div>
       <div class="form-group">
         <label for="cognome">Cognome:</label>
         <input type="text" id="cognome" name="cognome" class="form-control" ngModel required>

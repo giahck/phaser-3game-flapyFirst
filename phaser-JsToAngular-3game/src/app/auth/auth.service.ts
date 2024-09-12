@@ -33,10 +33,10 @@ export class AuthService {
     return user ? user.id : null;
   }
   get(url: string): Observable<any> {
-    return this.http.get("http://localhost:8080" + url);
+    return this.http.get(this.apiURL + url);
   }
   getToken(code: string): Observable<boolean> {
-    return this.http.get<Token>(`http://localhost:8080/auth/callback?code=${code}`, { observe: 'response' })
+    return this.http.get<Token>(`${this.apiURL}/auth/callback?code=${code}`, { observe: 'response' })
       .pipe(
         map((response: HttpResponse<Token>) => {
           if (response.status === 200 && response.body) {

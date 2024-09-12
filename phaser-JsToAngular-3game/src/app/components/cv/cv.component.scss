@@ -24,9 +24,9 @@ form {
   height: 70vh;
 }
 
-.containerControll::before {
+/* .containerControll::before {
   content: "";
-  /* position: absolute; */
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -36,12 +36,12 @@ form {
   z-index: 0;
   border-radius: inherit;
   transition: filter 0.3s ease;
-}
+} */
 
-.containerControll:hover::before {
+/* .containerControll:hover::before {
   filter: brightness(1);
 }
-
+ */
 .input-container:hover .input-label {
   font-size: 1.2em;
 }
@@ -58,7 +58,7 @@ form {
   color: #fff;
   z-index: 1;
   transition: font-size 0.3s ease;
- // min-height: 50px;
+  min-height: 50px;
 }
 
 .inputForm,
@@ -70,9 +70,14 @@ form {
   border-bottom: 1px solid #000;
   font-size: 1.2em;
   transition: font-size 0.3s ease;
+
+  width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .inputForm:hover {
+  
   font-size: 1.8em;
   .input-label {
     font-size: 1.2em;
@@ -109,6 +114,7 @@ button:hover {
 
 .input-empty,
 .input-empty:focus {
+  margin: 0 5px;
   box-shadow: -1px 0px 20px -11px #000000;
   transition: box-shadow 0.3s ease-in-out, color 1s ease-in-out;
 }
@@ -119,5 +125,30 @@ button:hover {
 
 .input-filled {
   display: none
+}
+.vertical-text {
+  margin: 10px;
+  writing-mode: vertical-rl; /* Imposta la modalità di scrittura verticale da destra a sinistra */
+  text-orientation: upright; /* Mantiene il testo in posizione verticale */
   
+}
+@media (max-width: 576px) {
+ /*  .input-label {
+    font-size: 1.2em; 
+  } */
+  button{
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .inputForm {
+    font-size: 1em; /* Riduci la dimensione del font per dispositivi piccoli */
+    min-width: 100%; /* Assicura che l'input occupi tutta la larghezza disponibile */
+    max-width: 300px;
+  }
+
+  .overflow-container {
+    padding-bottom: 10px; 
+  }
 }
