@@ -1,1 +1,300 @@
-<p>cv works!</p>
+<div class="container-fluid mt-5">
+  <div class="row d-flex justify-content-center">
+    <div *ngIf="acttive"  class="col-12 col-xxl-5 col-lg-6 col-md-7 containerControll">
+      <h1 class="text-center">Personal Contact</h1>
+      <div *ngIf="switches.personal" >
+        <form #form="ngForm" (ngSubmit)="onPersonalContact(form)" class="d-flex justify-content-center align-items-center">
+          <div class="row-cols-12 d-flex justify-content-center ">
+            <div class="d-flex flex-column input-container ">
+              <!--  <div *ngFor="let item of attributesPersonal; let i = index"> -->
+                <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
+                  {{ attributesPersonal[countAttributesPersonal].nome| uppercase }}
+                </label>
+                <input
+                id="{{attributesPersonal[countAttributesPersonal].nome}}"
+                type="text"
+                [(ngModel)]="attributesPersonal[countAttributesPersonal].value"
+                name="{{attributesPersonal[countAttributesPersonal].nome}}"
+                [placeholder]="attributesPersonal[countAttributesPersonal].nome | uppercase"
+                class="mb-1 inputForm"        
+                ngModel required
+                />
+              </div>
+            </div>
+            <div  class="d-flex justify-content-center mt-3">
+              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}">Nǝxt</button>
+            </div>
+          </form>
+        </div>
+        <div *ngIf="switches.esp" >
+          <h2 class="text-center">Esperienza {{countAttributesEsperienza+1}}</h2>
+          <form #form="ngForm" (ngSubmit)="onPersonalEsperienza(form)">
+            <div class="row-cols-12 d-flex justify-content-center">
+              <button class="vertical-text" type="button" [disabled]="!form.valid && this.cv.esperienze.length === this.attributesEsperienza.length" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="addEsperienza(form)">AGGIUNGI</button>
+              <div class="d-flex flex-column input-container">
+                <div ngfor>
+                  <div *ngFor="let item of attributesEsperienza[countAttributesEsperienza];">
+                    <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
+                      {{ item.nome | uppercase }}
+                    </label>
+                    <input
+                    *ngIf="item.nome === 'dataInizio' || item.nome === 'dataFine'"
+                    id="{{item.nome}}"
+                    type="date"
+                    [(ngModel)]="item.value"
+                    name="{{item.nome}}"
+                    [placeholder]="item.nome | uppercase"
+                    class="mb-1 inputForm"
+                    ngModel required
+                    />
+                    
+                    <input
+                    *ngIf="item.nome !== 'dataInizio' && item.nome !== 'dataFine'"
+                    id="{{item.nome}}"
+                    type="text"
+                    [(ngModel)]="item.value"
+                    name="{{item.nome}}"
+                    [placeholder]="item.nome | uppercase"
+                    class="mb-1 inputForm"
+                    ngModel required
+                    />
+                  </div>
+                </div>
+              </div>
+              <button  class="vertical-text" type="button" [disabled]="this.attributesEsperienza.length===0" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="cancellaEsperienza()">CANCELLA</button>
+            </div>
+            <div  class="d-flex justify-content-center mt-3">
+              <button type="button" class="input-empty" (click)="backBlockEsp()">back</button>
+              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >next</button>
+            </div>
+          </form>
+        </div>
+        <div *ngIf="switches.form" >
+          <h2 class="text-center">Formazione {{countAttributesFormazione+1}}</h2>
+          <form #form="ngForm" (ngSubmit)="onPersonalFormazione(form)">
+            <div class="row-cols-12 d-flex justify-content-center">
+              <button class="vertical-text" type="button" [disabled]="!form.valid && this.cv.esperienze.length === this.attributesEsperienza.length" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="addFormazione(form)">AGGIUNGI</button>
+              <div class="d-flex flex-column input-container">
+                <div *ngFor="let item of attributesFormazione[countAttributesFormazione];">
+                  <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
+                    {{ item.nome | uppercase }}
+                  </label>
+                  <input
+                  *ngIf="item.nome === 'dataInizio' || item.nome === 'dataFine'"
+                  id="{{item.nome}}"
+                  type="date"
+                  [(ngModel)]="item.value"
+                  name="{{item.nome}}"
+                  [placeholder]="item.nome | uppercase"
+                  class="mb-1 inputForm"
+                  ngModel required
+                  />
+                  
+                  <input
+                  *ngIf="item.nome !== 'dataInizio' && item.nome !== 'dataFine'"
+                  id="{{item.nome}}"
+                  type="text"
+                  [(ngModel)]="item.value"
+                  name="{{item.nome}}"
+                  [placeholder]="item.nome | uppercase"
+                  class="mb-1 inputForm"
+                  ngModel required
+                  />
+                </div>
+              </div>
+              
+              <button class="vertical-text" type="button" [disabled]="!form.valid && this.cv.esperienze.length === this.attributesEsperienza.length" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}"  (click)="cancellaFormazzione()">CANCELLA</button>
+            </div>
+            
+            <div  class="d-flex justify-content-center mt-3">
+              <button type="button" class="input-empty" (click)="backBlockForm()">back</button>
+              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >next</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-12 col-md-5 col-lg-6 col-xxl-5 d-flex align-items-stretch ">
+        <div class="mx-1 containerControll w-100  ">
+          <div class="p-4 overflow-container">
+            <h2>Contatti Personali</h2>
+            <div *ngFor="let item of attributesPersonal">
+              {{item.nome}}: {{item.value}}
+            </div>
+            <div *ngFor="let item of attributesEsperienza; let i=index">
+              <h2>Esperienze Lavorative {{i+1}}</h2>
+              <div *ngFor="let key of item">
+                {{key.nome}}: {{key.value}}
+              </div>
+            </div>
+            <div *ngFor="let item of attributesFormazione; let i=index">
+              <h2>Formazione {{i+1}}</h2>
+              <div *ngFor="let key of item">
+                {{key.nome}}: {{key.value}}
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+    
+    <!-- <div class="container"></div>
+    <h2>Inserisci i dati del CV</h2>
+    <form #cvForm="ngForm" (ngSubmit)="onSubmit(cvForm)">
+      <div class="form-group">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" class="form-control" ngModel required>
+      </div>
+      <div class="form-group">
+        <label for="cognome">Cognome:</label>
+        <input type="text" id="cognome" name="cognome" class="form-control" ngModel required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" class="form-control" ngModel required>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Telefono:</label>
+        <input type="tel" id="telefono" name="telefono" class="form-control" ngModel required>
+      </div>
+    <div class="form-group">
+      <label for="indirizzo">Indirizzo:</label>
+      <input type="text" id="indirizzo" name="indirizzo" class="form-control" ngModel required>
+    </div>
+    <div class="form-group">
+      <label for="titolo">Titolo:</label>
+      <input type="text" id="titolo" name="titolo" class="form-control" ngModel required>
+    </div>
+
+    <h3>Esperienze</h3>
+    <div *ngFor="let esperienza of cv.esperienze; let i = index" class="form-group">
+      <label for="esperienzaNome{{i}}">Nome:</label>
+      <input type="text" id="esperienzaNome{{i}}" name="esperienzaNome{{i}}" class="form-control" [(ngModel)]="esperienza.nome" required>
+      <label for="esperienzaLuogo{{i}}">Luogo:</label>
+      <input type="text" id="esperienzaLuogo{{i}}" name="esperienzaLuogo{{i}}" class="form-control" [(ngModel)]="esperienza.luogo" required>
+      <label for="esperienzaDataInizio{{i}}">Data Inizio:</label>
+      <input type="date" id="esperienzaDataInizio{{i}}" name="esperienzaDataInizio{{i}}" class="form-control" [(ngModel)]="esperienza.dataInizio">
+      <label for="esperienzaDataFine{{i}}">Data Fine:</label>
+      <input type="date" id="esperienzaDataFine{{i}}" name="esperienzaDataFine{{i}}" class="form-control" [(ngModel)]="esperienza.dataFine">
+      <label for="esperienzaDescrizione{{i}}">Descrizione:</label>
+      <textarea id="esperienzaDescrizione{{i}}" name="esperienzaDescrizione{{i}}" class="form-control" [(ngModel)]="esperienza.descrizione" required></textarea>
+      <button type="button" class="btn btn-danger" (click)="removeEsperienza(i)">Rimuovi Esperienza</button>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="addEsperienza()">Aggiungi Esperienza</button>
+
+    <h3>Formazioni</h3>
+    <div *ngFor="let formazione of cv.formazioni; let i = index" class="form-group">
+      <label for="formazioneNome{{i}}">Nome:</label>
+      <input type="text" id="formazioneNome{{i}}" name="formazioneNome{{i}}" class="form-control" [(ngModel)]="formazione.nome" required>
+      <label for="formazioneLuogo{{i}}">Luogo:</label>
+      <input type="text" id="formazioneLuogo{{i}}" name="formazioneLuogo{{i}}" class="form-control" [(ngModel)]="formazione.luogo" required>
+      <label for="formazioneDataInizio{{i}}">Data Inizio:</label>
+      <input type="date" id="formazioneDataInizio{{i}}" name="formazioneDataInizio{{i}}" class="form-control" [(ngModel)]="formazione.dataInizio">
+      <label for="formazioneDataFine{{i}}">Data Fine:</label>
+      <input type="date" id="formazioneDataFine{{i}}" name="formazioneDataFine{{i}}" class="form-control" [(ngModel)]="formazione.dataFine">
+      <label for="formazioneDescrizione{{i}}">Descrizione:</label>
+      <textarea id="formazioneDescrizione{{i}}" name="formazioneDescrizione{{i}}" class="form-control" [(ngModel)]="formazione.descrizione" required></textarea>
+      <button type="button" class="btn btn-danger" (click)="removeFormazione(i)">Rimuovi Formazione</button>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="addFormazione()">Aggiungi Formazione</button>
+
+    <button type="submit" class="btn btn-success">Salva CV</button>
+  </form>
+</div> -->
+<!-- <div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col-11 col-xl-7 col-lg-8 col-md-8 col-sm-10 containerControll">
+      <h1 class="text-center">Personal Contact</h1>
+      <div *ngIf="switches.personal" >
+      <form #form="ngForm" (ngSubmit)="onPersonalContact(form)">
+          <div class="row-cols-10 d-flex justify-content-center">
+           
+              <div class="d-flex flex-column input-container ">
+                <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
+                  {{ currentAttribute | uppercase }}
+                </label>
+                <input
+                id="currentAttribute"
+                type="text"
+                [(ngModel)]="cvText"
+                name="currentAttribute"
+                value="{{cvText}}"
+                placeholder="{{currentAttribute | uppercase}}"
+                class="mb-1 inputForm"              
+                />
+              </div>
+          </div>
+          <div  class="d-flex justify-content-center mt-3">
+            <button [disabled]="isInputEmpty" [ngClass]="{'input-empty': isInputEmpty, 'input-filled': !isInputEmpty}" type="button" (click)="nextAttribute()">Next</button> 
+            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="switches.form" >
+      <form #form="ngForm" (ngSubmit)="onPersonalContact(form)">
+          <div class="row-cols-10 d-flex justify-content-center">
+           
+              <div class="d-flex flex-column input-container ">
+                <div *ngFor="let item of attributesFormazione; let i = index">
+                  <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
+                    {{ item.nome | uppercase }}
+                  </label>
+                  <input
+                    *ngIf="item.nome === 'dataInizio' || item.nome === 'dataFine'"
+                    id="{{item.nome}}"
+                    type="date"
+                    [(ngModel)]="item.value"
+                    name="{{item.nome}}"
+                    [placeholder]="item.nome | uppercase"
+                    class="mb-1 inputForm"
+                  />
+                 
+                  <input
+                    *ngIf="item.nome !== 'dataInizio' && item.nome !== 'dataFine'"
+                    id="{{item.nome}}"
+                    type="text"
+                    [(ngModel)]="item.value"
+                    name="{{item.nome}}"
+                    [placeholder]="item.nome | uppercase"
+                    class="mb-1 inputForm"
+                  />
+                
+                </div>
+               
+              </div>
+          </div>
+          <div  class="d-flex justify-content-center mt-3">
+            <button [disabled]="isInputEmpty" [ngClass]="{'input-empty': isInputEmpty, 'input-filled': !isInputEmpty}" type="button" (click)="nextAttribute()">Next</button> 
+            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> -->
+<!-- <div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col-11 col-xl-7 col-lg-8 col-md-8 col-sm-10 containerControll">
+      <h1 class="text-center">Personal Contact</h1>
+        <form [formGroup]="personalContact" (ngSubmit)="onPersonalContact()">
+          <div class="row-cols-10 d-flex justify-content-center">
+            <div class="d-flex flex-column input-container ">
+              <label for="currentAttribute" class="input-label d-flex align-items-center justify-content-center">
+                {{ currentAttribute | uppercase }}
+              </label>
+              <input
+                type="text"
+                formControlName="{{currentAttribute}}"
+                placeholder="{{currentAttribute}}"
+                class="mb-1 inputForm"
+                value="{{valore}}"
+              />
+            </div>
+          </div>
+          <div class="d-flex justify-content-center mt-3">
+            <button type="button" (click)="nextAttribute()">Next</button> 
+          </div>
+        </form>
+      </div>
+    </div>
+</div> -->

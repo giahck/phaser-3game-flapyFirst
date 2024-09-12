@@ -1,7 +1,9 @@
-<div class="body">
-  <app-nav-bar *ngIf="user"></app-nav-bar>
-</div>
+<div class="container-fluid p-0">
+  <div class="body">
+    <app-nav-bar *ngIf="user"></app-nav-bar>
+  </div>
 
-<div class="content">
-  <router-outlet></router-outlet>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
 </div>
