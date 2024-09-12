@@ -10,34 +10,31 @@ import { AuthService } from '../auth/auth.service';
 })
 export class CvService {
   apiUrl=environment.apiURL;
-  private cvUser = new BehaviorSubject<Cv[]>([]);
+  private cvUser = new BehaviorSubject<Cv>({} as Cv);
   cvUser$ = this.cvUser.asObservable();
   private isLoaded = false;
   constructor(private http:HttpClient,private user:AuthService) { }
-  getCV$(): Cv[] {
+  getCV$(): Cv {
     return this.cvUser.getValue();
   }
-  setCV(cv: Cv[]): void {
+  setCV(cv: Cv): void {
     this.cvUser.next(cv);
     this.isLoaded = true; 
   }
   async getCV(): Promise<void> {
     if (this.isLoaded) {
-      // Se i dati sono già caricati, non fare un'altra chiamata
       return;
     }
-
-    // Aspetta che l'autenticazione sia completata
     await this.user.restoreAuth();
 
-    const userId = this.user.getId();
+    const userId = this.user.getId;
     if (!userId) {
       console.error('User ID is null');
       return;
     }
 
     try {
-      const cv = await lastValueFrom(this.http.get<Cv[]>(`${this.apiUrl}cv/${userId}`));
+      const cv = await lastValueFrom(this.http.get<Cv>(`${this.apiUrl}cv/${userId}`));
       this.setCV(cv);
     } catch (error) {
       if (error instanceof HttpErrorResponse) {

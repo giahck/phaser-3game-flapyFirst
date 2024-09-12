@@ -33,7 +33,7 @@ public class AuthController {
     @GetMapping("/auth/url")
     public ResponseEntity<UrlDto> auth() {
         String url = new GoogleAuthorizationCodeRequestUrl(clientId,
-                "http://localhost:4200",
+                "http://192.168.1.123:4200",
                 Arrays.asList(
                         "email",
                         "profile",
@@ -53,7 +53,7 @@ public class AuthController {
                     clientId,
                     clientSecret,
                     code,
-                    "http://localhost:4200"
+                    "http://192.168.1.123:4200"
             ).execute();
 
             // Ottieni sia l'access token che l'ID token

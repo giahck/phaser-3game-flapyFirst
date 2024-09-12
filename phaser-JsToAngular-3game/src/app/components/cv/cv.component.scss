@@ -1,0 +1,154 @@
+.containerControll {
+  position: relative;
+  background: radial-gradient(circle, #FF6E4C, #FF426C);
+  color: white;
+  border-radius: 30px;
+  box-shadow: -1px 0px 20px -11px #000000;
+  height: 85vh
+  /* overflow: auto; */
+  /* overflow-y: auto */
+}
+.overflow-container {
+  height: 82vh; 
+  overflow-y: auto;  
+  scrollbar-width: none;
+  padding-bottom: 5px;
+}
+form {
+  position: relative;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+ /*  justify-content: center;
+  align-items: center; */
+  height: 70vh;
+}
+
+/* .containerControll::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, #FF6E4C, #FF426C);
+  filter: brightness(0.3);
+  z-index: 0;
+  border-radius: inherit;
+  transition: filter 0.3s ease;
+} */
+
+/* .containerControll:hover::before {
+  filter: brightness(1);
+}
+ */
+.input-container:hover .input-label {
+  font-size: 1.2em;
+}
+
+.input-container {
+  /* margin-top: 150px;
+  position: relative; */
+  z-index: 1;
+  transition: font-size 0.3s ease;
+}
+
+.input-label {
+  font-size: 1.8em;
+  color: #fff;
+  z-index: 1;
+  transition: font-size 0.3s ease;
+  min-height: 50px;
+}
+
+.inputForm,
+.inputForm:focus,
+.inputForm:active {
+  background: none;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #000;
+  font-size: 1.2em;
+  transition: font-size 0.3s ease;
+
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.inputForm:hover {
+  
+  font-size: 1.8em;
+  .input-label {
+    font-size: 1.2em;
+  }
+}
+
+.inputForm {
+  min-height: 50px;
+  min-width: 100%;
+}
+
+h1 {
+  color: #457041;
+  z-index: 1;
+  position: relative;
+}
+
+button {
+  z-index: 1;
+  position: relative;
+  background: none;
+  border-radius: 20px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 1.8em;
+  padding: 10px;
+  color: #000000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button:hover {
+  color: rgb(0, 0, 0);
+}
+
+.input-empty,
+.input-empty:focus {
+  margin: 0 5px;
+  box-shadow: -1px 0px 20px -11px #000000;
+  transition: box-shadow 0.3s ease-in-out, color 1s ease-in-out;
+}
+.input-empty:hover {
+  box-shadow: -1px 0px 20px -11px #000000, inset -1px 0px 20px -11px #000000;
+  transition: box-shadow 0.8s ease-in-out, color 1s ease-in-out;
+}
+
+.input-filled {
+  display: none
+}
+.vertical-text {
+  margin: 10px;
+  writing-mode: vertical-rl; /* Imposta la modalità di scrittura verticale da destra a sinistra */
+  text-orientation: upright; /* Mantiene il testo in posizione verticale */
+  
+}
+@media (max-width: 576px) {
+ /*  .input-label {
+    font-size: 1.2em; 
+  } */
+  button{
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .inputForm {
+    font-size: 1em; /* Riduci la dimensione del font per dispositivi piccoli */
+    min-width: 100%; /* Assicura che l'input occupi tutta la larghezza disponibile */
+    max-width: 300px;
+  }
+
+  .overflow-container {
+    padding-bottom: 10px; 
+  }
+}

@@ -8,7 +8,6 @@ import com.ThreeGame.ThreeGame.users.entity.Users;
 import com.ThreeGame.ThreeGame.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

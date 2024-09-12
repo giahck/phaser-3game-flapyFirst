@@ -30,7 +30,8 @@ section {
 }
 
 .menu {
-  position: fixed;
+  position: absolute;
+  z-index: 100;
 }
 
 .menu__toggle {

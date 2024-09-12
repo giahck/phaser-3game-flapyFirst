@@ -15,6 +15,9 @@ export class AuthService {
    authChecked$ = new BehaviorSubject<boolean>(false);
   private authSub = new BehaviorSubject<AuthData | null>(null);
   user$ = this.authSub.asObservable();
+  userId$: Observable<number | null> = this.authSub.pipe(
+    map(user => user ? user.id : null)
+  );
   private jwtHelper = new JwtHelperService();
   private timeOut: any;
 
@@ -24,15 +27,16 @@ export class AuthService {
     private router: Router
   ) {}
 
-  getId(): number | null{
+  get getId(): number | null{
     const user=this.authSub.getValue();
+   // console.log(user);
     return user ? user.id : null;
   }
   get(url: string): Observable<any> {
-    return this.http.get("http://localhost:8080" + url);
+    return this.http.get(this.apiURL + url);
   }
   getToken(code: string): Observable<boolean> {
-    return this.http.get<Token>(`http://localhost:8080/auth/callback?code=${code}`, { observe: 'response' })
+    return this.http.get<Token>(`${this.apiURL}/auth/callback?code=${code}`, { observe: 'response' })
       .pipe(
         map((response: HttpResponse<Token>) => {
           if (response.status === 200 && response.body) {
@@ -50,7 +54,8 @@ export class AuthService {
               }).subscribe((messageResponse: HttpResponse<AuthData>) => {
                 if (messageResponse.body) {
                   this.authSub.next(messageResponse.body);
-                  messageResponse.body.accessToken = idToken;
+                  messageResponse.body.accessToken = accessToken;
+                  
                   this.autoLogout(messageResponse.body);
                 } else {
                   console.error('Message response body is null.');
@@ -110,6 +115,7 @@ export class AuthService {
     if (accessToken && this.isJwt(accessToken) && !this.jwtHelper.isTokenExpired(accessToken)) {
       try {
         await this.validateToken(accessToken);
+        this.getId;
       } catch (error) {
         console.warn('Errore durante la validazione del token:', error);
       }

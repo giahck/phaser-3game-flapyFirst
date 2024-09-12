@@ -1,6 +1,6 @@
 export interface Cv {
+  nome: string;
     id: number;
-    nome: string;
     cognome: string;
     email: string;
     telefono: string;
@@ -13,15 +13,15 @@ export interface Cv {
   export interface Esperienza {
     nome: string;
     luogo: string;
-    dataInizio: Date;
-    dataFine: Date;
+    dataInizio: Date| null;
+    dataFine: Date| null;
     descrizione: string;
   }
   
   export interface Formazione {
     nome: string;
     luogo: string;
-    dataInizio: Date;
-    dataFine: Date;
+    dataInizio: Date| null;
+    dataFine: Date| null;
     descrizione: string;
   }
