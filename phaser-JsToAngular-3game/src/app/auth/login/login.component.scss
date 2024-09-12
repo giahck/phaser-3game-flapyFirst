@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 .error-container {
-  height: 20px; /* Altezza riservata per i messaggi di errore */
+  height: 30px; /* Altezza riservata per i messaggi di errore */
 }
 
 .error-container small {
@@ -32,20 +32,20 @@ h2 {
 }
 
 p {
-  font-size: 14px;
+  /* font-size: 14px; */
   font-weight: 100;
   line-height: 20px;
   letter-spacing: 0.5px;
   margin: 20px 0 30px;
 }
 
-span {
+/* span {
   font-size: 12px;
-}
+} */
 
 a {
   color: #333;
-  font-size: 14px;
+  /* font-size: 14px; */
   text-decoration: none;
   margin: 15px 0;
 }
@@ -55,7 +55,7 @@ button {
   border: 1px solid #FF4B2B;
   background-color: #FF4B2B;
   color: #FFFFFF;
-  font-size: 12px;
+ /*  font-size: 12px; */
   font-weight: bold;
   padding: 12px 45px;
   letter-spacing: 1px;
@@ -77,7 +77,7 @@ button.ghost {
 }
 
 form {
-  background-color: #FFFFFF;
+  background-color: #F5DFD0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,9 +102,16 @@ input {
       0 10px 10px rgba(0,0,0,0.22);
   position: relative;
   overflow: hidden;
-  width: 768px;
+  width: 95%;
   max-width: 100%;
-  min-height: 550px;
+  min-height: 95vh;
+}
+@media (max-width: 480px) {
+  .container {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+  }
 }
 
 .form-container {
@@ -167,8 +174,8 @@ input {
 
 .overlay {
   background: #FF416C;
-  background: -webkit-linear-gradient(to right, #ff9c2b, #FF416C);
-  background: linear-gradient(to right, #ff9c2b, #FF416C);
+  background: -webkit-linear-gradient(to right, #ff9c2b, #4ba023);
+  background: linear-gradient(to right, #ff9c2b, #2b9241);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;

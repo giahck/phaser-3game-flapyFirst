@@ -165,15 +165,16 @@ class PlayScene extends BaseScene {
   createScore() {
     this.score = 0;
     const bestScore = localStorage.getItem("highScore") || 0;
-    this.scoreText = this.add.text(600, 14, `Score: ${0}`, {
+    this.scoreText = this.add.text(600, 14, `Score: ${0}  `, {
       fontSize: "32px",
       fill: "#000",
+      fontFamily: "Bangers, system-ui"
     });
     this.bestScoreText = this.add.text(
       600,
       52,
-      `Best score: ${bestScore || 0}`,
-      { fontSize: "18px", fill: "#000" }
+      `Best score: ${bestScore || 0}  `,
+      { fontSize: "18px", fill: "#000",fontFamily: "Bangers, system-ui" }
     );
   }
   createPause() {
@@ -210,18 +211,19 @@ class PlayScene extends BaseScene {
     const { nome, cognome, indirizzo, email, telefono } = this.cv;
     // Crea un array con le righe di testo
     const cvLines = [
-      `Nome: ${nome}`,
-      `Cognome: ${cognome}`,
-      `Indirizzo: ${indirizzo}`,
-      `email: ${email}`,
-      `Tel: ${telefono}`,
+      `Nome: ${nome} `,
+      `Cognome: ${cognome} `,
+      `Indirizzo: ${indirizzo} `,
+      `email: ${email} `,
+      `Tel: ${telefono} `,
     ];
 
     // Stile del testo
     const textStyle = {
-      fontSize: "40px",
-      fill: "#FCF118", // Colore viola
-      fontWeight: "bold",
+      fontSize: "50px",
+      fill: "#516E44", 
+      /* fontWeight: "bold", */
+      fontFamily: "Bangers, system-ui",
     };
 
     // Calcola la posizione di partenza per il testo centrato verticalmente
@@ -229,9 +231,10 @@ class PlayScene extends BaseScene {
     this.add
       .text(this.config.width / 2, 50, this.cv.titolo, {
         fontSize: "50px",
-        fill: "#FCF118", // Colore viola
+        fill: "#516E44", 
         fontWeight: "bold",
         stroke: "#000",
+        fontFamily: "Bangers, system-ui",
         strokeThickness: 4,
       })
       .setOrigin(0.5, 0);
@@ -274,10 +277,10 @@ class PlayScene extends BaseScene {
       const { nome, tipo, luogo, descrizione, dataInizio, dataFine } =
         this.esperienzeFormazioni[i];
       const cvLines = [
-        ` ${tipo}\n`,
-        `${nome}\n\n`,
-        `${luogo}\n\n`,
-        `${descrizione}\n\n`,
+        ` ${tipo} \n`,
+        `${nome} \n\n`,
+        `${luogo} \n\n`,
+        `${descrizione} \n\n`,
         `${dataInizio}  ${dataFine}`,
       ];
       const textX = uPipe.x + uPipe.width + 300;
@@ -286,8 +289,9 @@ class PlayScene extends BaseScene {
       cvLines.forEach((line, index) => {
         const text = this.add
           .text(textX, textY, concatenatedText, {
-            fontSize: "32px",
+            fontSize: "45px",
             fill: "#ffffff",
+            fontFamily: "Bangers, system-ui",
             wordWrap: { width: pipeHorizontalDisty - 100 },
           })
           .setOrigin(0.5, 0);
@@ -345,7 +349,7 @@ class PlayScene extends BaseScene {
 
     if (!bestScore || this.score > bestScore) {
       localStorage.setItem("highScore", this.score);
-      this.bestScoreText.setText(`Best score: ${this.score}`);
+      this.bestScoreText.setText(`Best score: ${this.score}  `);
       this.bestScoreText.setFill("#ff0000");
     }
   }
@@ -381,14 +385,14 @@ class PlayScene extends BaseScene {
   }
   increaseScore() {
     this.score++;
-    this.scoreText.setText(`Score: ${this.score}`);
+    this.scoreText.setText(`Score: ${this.score}  `);
     score$.emit("update", this.score);
   }
   subscribeToScore() {
     score$.on("update", (score) => {
       //   console.log(`New Score: ${score}`);
       if (score > this.bestScore) {
-        this.bestScoreText.setText(`Best score: ${score}`);
+        this.bestScoreText.setText(`Best score: ${score}  `);
         this.bestScoreText.setFill("#ff0000");
       }
     });

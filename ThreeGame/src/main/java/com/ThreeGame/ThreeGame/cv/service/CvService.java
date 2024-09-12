@@ -24,8 +24,8 @@ public class CvService {
     private UserRepository userRepository;
 
     public cvDto saveCv(cvDto cvDto) {
+        System.out.println("dsf");
         Users user = userRepository.findById((int) cvDto.getId()).orElseThrow(() -> new RuntimeException("Utente non trovato"));
-
         Cv cvExisting = user.getCv();
         if (cvExisting != null) {
             Cv updateCv = cvMapper.toEntity(cvDto);
@@ -45,12 +45,12 @@ public class CvService {
             cvExisting.setUsers(user);
 
             return cvMapper.toDto(cvRepository.save(cvExisting));
-        }else {
-        Cv cvNew = cvMapper.toEntity(cvDto);
-        cvNew.setUsers(user);
-        cvNew.getEsperienze().forEach(esperienza -> esperienza.setCv(cvNew));
-        cvNew.getFormazioni().forEach(formazione -> formazione.setCv(cvNew));
-        return cvMapper.toDto(cvRepository.save(cvNew));
+        } else {
+            Cv cvNew = cvMapper.toEntity(cvDto);
+            cvNew.setUsers(user);
+            cvNew.getEsperienze().forEach(esperienza -> esperienza.setCv(cvNew));
+            cvNew.getFormazioni().forEach(formazione -> formazione.setCv(cvNew));
+            return cvMapper.toDto(cvRepository.save(cvNew));
         }
     }
 
@@ -60,6 +60,7 @@ public class CvService {
                 .map(cvMapper::toDto)
                 .toList();
     }
+
     public cvDto findByUserId(Long userId) {
         Users user = userRepository.findById(Math.toIntExact(userId)).orElseThrow(() -> new RuntimeException("Utente non trovato"));
         Cv cv = user.getCv();

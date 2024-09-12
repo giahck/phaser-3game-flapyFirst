@@ -117,9 +117,11 @@ export class AuthService {
         await this.validateToken(accessToken);
         this.getId;
       } catch (error) {
+        this.router.navigate(['/home'])
         console.warn('Errore durante la validazione del token:', error);
       }
     } else {
+      this.router.navigate(['/home'])
       console.warn('Token non JWT rilevato o token scaduto');
       this.authChecked$.next(true);
     }
@@ -146,10 +148,14 @@ export class AuthService {
   logout(): void {
     this.removeToken();
     this.authSub.next(null);
-    this.router.navigate(['/home']);
+    this.router.navigate(['/home']).then(() => {
+      // Dopo la navigazione, fai il reload della pagina
+      window.location.reload();
+    })
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
+    
   }
 
   private handleError(error: any): Observable<never> {

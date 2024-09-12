@@ -1,3 +1,4 @@
+import { Cv } from './../../../../models/cv/cv.interface';
 import Phaser from 'phaser';
 import { Player } from './Player';
 import { SpriteWithDynamicBody } from './../type';
@@ -11,16 +12,20 @@ class PlayScene extends GameScene {
   gameOverText!: Phaser.GameObjects.Image;
   restartText!: Phaser.GameObjects.Image;
   gameOverContainer!: Phaser.GameObjects.Container;
-  
+  private cvTweens: Phaser.Tweens.Tween[] = [];
+  private cvTexts: Phaser.GameObjects.Text[] = [];
+  cv!:Cv;
   spawnInterval: number = 1500;
   spawnTime: number = 0;
   obstacleSpeed: number = 7;
   gameSpeed: number = 7;
-  constructor() {
+  constructor(Cv:Cv) {
     super('PlayScene');
+    this.cv=Cv;
   }
   
   create() {
+    console.log('this.cv',this.cv);
     this.createEnvironment();
     this.createPlayer();
     this.createObstacles();
@@ -28,6 +33,7 @@ class PlayScene extends GameScene {
     this.createAnimations();
     
     this.handleGameStart();
+    this.spawnCvBlocks();
     this.handleObstacleCollisions();
     this.handleGameRestart();
   }
@@ -54,10 +60,6 @@ class PlayScene extends GameScene {
     this.ground.tilePositionX += this.gameSpeed;
     //  console.log(this.ground.tilePositionX);
   }
-
-
-
-
 
   createEnvironment() {
     this.ground = this.add
@@ -109,6 +111,42 @@ class PlayScene extends GameScene {
       });
     });
   }
+  spawnCvBlocks() {
+    const cvBlocks = [
+      "Nome: Mario Rossi",
+      "Esperienza: Sviluppatore Web presso XYZ",
+      "Formazione: Laurea in Informatica",
+      "Competenze: JavaScript, Angular, Phaser",
+      // Aggiungi altri blocchi di testo qui
+    ];
+
+    const textStyle = {
+      fontSize: "32px",
+      fill: "#516E44",
+      fontFamily: "Bangers, system-ui",
+      wordWrap: { width: this.gameWidth - 100 },
+      align: "center",
+    };
+
+    let textY = 50; // Posizione Y iniziale
+
+    cvBlocks.forEach((block, index) => {
+      const text = this.add.text(this.gameWidth + 100, textY, block, textStyle).setOrigin(0.5, 0);
+      textY += text.height + 20; // Aggiorna la posizione Y per il prossimo blocco
+
+      // Anima il testo da destra a sinistra
+     const tween= this.tweens.add({
+        targets: text,
+        x: -200,
+        duration: 15000,
+        ease: 'linear',
+        repeat: -1,
+        yoyo: false,
+      });
+      this.cvTweens.push(tween);
+      this.cvTexts.push(text);
+    });
+  }
   handleObstacleCollisions() {
     this.physics.add.collider(this.obstacles, this.player, () => {
       this.isGameRunning = false;
@@ -119,6 +157,9 @@ class PlayScene extends GameScene {
       this.spawnTime = 0;
       this.gameSpeed = 5;
       this.obstacleSpeed = 5;
+
+      this.cvTweens.forEach(tween => tween.stop());
+      this.cvTexts.forEach(text => text.setVisible(false));
     });
   }
   handleGameRestart() {
@@ -131,6 +172,21 @@ class PlayScene extends GameScene {
       this.anims.resumeAll();
 
       this.isGameRunning = true;
+      this.cvTexts.forEach(text => text.setVisible(true));
+      this.cvTweens.forEach(tween => tween.destroy());
+      this.cvTweens = [];
+
+      this.cvTexts.forEach(text => {
+        const tween = this.tweens.add({
+          targets: text,
+          x: -150,
+          duration: 5000,
+          ease: 'Linear',
+          repeat: -1,
+          yoyo: false,
+        });
+        this.cvTweens.push(tween);
+      });
     });
   }
   createAnimations() {
