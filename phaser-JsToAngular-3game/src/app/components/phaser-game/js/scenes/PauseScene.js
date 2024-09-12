@@ -4,8 +4,8 @@ class PauseScene extends BaseScene {
     constructor(config) {
       super('PauseScene',config);
       this.menu=[
-        {scene: 'PlayScene', text: 'Continua'},
-        {scene: 'MenuScene', text: 'Exit'},
+        {scene: 'PlayScene', text: 'Continua '},
+        {scene: 'MenuScene', text: 'Exit '},
       ];
       
     }
@@ -26,7 +26,7 @@ class PauseScene extends BaseScene {
             textGameO.setStyle({fill: '#CD00FF'});
         });
         textGameO.on('pointerup', () => {
-            if (menuItem.scene && menuItem.text === 'Continua') {
+            if (menuItem.scene && menuItem.text === 'Continua ') {
                 // Rimuovi gli input prima di riprendere il gioco
                 const playScene = this.scene.get('PlayScene');
                 if (playScene) {
@@ -40,7 +40,7 @@ class PauseScene extends BaseScene {
                 if (playScene) {
                     playScene.handleInputs();
                 }
-            } else if (menuItem.text === 'Exit') {
+            } else if (menuItem.text === 'Exit ') {
                 this.scene.stop('PlayScene');
                 this.scene.start(menuItem.scene);
             }

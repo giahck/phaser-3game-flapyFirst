@@ -69,7 +69,7 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
     if (game === 'initializeGame') {
       initializeGame(container,this.cv);
     } else if (game === 'initializeGameDino') {
-      initializeGameDino(container);
+      initializeGameDino(container, this.cv);
     }
   }
 
@@ -84,15 +84,13 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
     }
   }
   ngAfterViewInit(): void {
-    // Seleziona l'elemento con la classe 'game-container'
     const gameContainer = document.querySelector('.game-container')as HTMLElement;
     if (gameContainer) {
-      // Imposta un timer di 1 secondo prima di inizializzare il gioco
+    
       console.log(this.cv);
       setTimeout(() => {
-        // Inizializza il gioco all'interno dell'elemento selezionato
         console.log(this.cv);
-        initializeGame(gameContainer, this.cv);
+        initializeGameDino(gameContainer, this.cv);
       }, 500);
   }
 }}

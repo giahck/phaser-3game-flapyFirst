@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import PreloadScene from './scene/PreloadScene';
 import PlayScene from './scene/PlayScene';
+import { Cv } from '../../../models/cv/cv.interface';
 let gameInstance: Phaser.Game | null = null;
 
 export const PRELOAD_CONFIG = {
   cactusesCount: 6,
   birdsCount: 1
 }
-export function initializeGameDino(container: HTMLElement){
+export function initializeGameDino(container: HTMLElement,cv:Cv){
   cleanupGameDino();
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -24,7 +25,7 @@ export function initializeGameDino(container: HTMLElement){
         debug: true
       }
     },
-    scene: [PreloadScene, PlayScene]
+    scene: [PreloadScene,new PlayScene(cv)]
   };
 
   gameInstance=new Phaser.Game(config);

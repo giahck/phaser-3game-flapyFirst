@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CvService } from "../../service/cv.service";
 import {combineLatest,Subscription} from "rxjs";
 import { CommonModule } from "@angular/common";
@@ -43,7 +43,7 @@ ed la logica diventa piú pulita
 )*/
 
 
-export class CvComponent implements OnInit {
+export class CvComponent implements OnInit, OnDestroy {
   cvSubscription!: Subscription;
   cv!: CvImplementation;
   acttive: boolean = false;
@@ -69,6 +69,7 @@ export class CvComponent implements OnInit {
         this.cv.id = userId;
         this.initializeAttributes();
         this.acttive = true;
+        console.log(this.cv.id)
       }
     });
   }
@@ -126,7 +127,6 @@ export class CvComponent implements OnInit {
       this.attributesFormazione.splice(this.countAttributesFormazione, 1);
       this.countAttributesFormazione = Math.max(0, this.countAttributesFormazione - 1);
     }
-    console.log(this.countAttributesFormazione)
     if (this.attributesFormazione.length === 0 &&this.cv.esperienze.length === 0) {
       this.backBlockForm();
     }
@@ -151,20 +151,16 @@ export class CvComponent implements OnInit {
     }
   }
   onPersonalEsperienza(form: NgForm) {
-    console.log(this.attributesFormazione);
-    console.log(this.cv.formazioni);
     if (form.valid) {
       if (this.countAttributesEsperienza > this.cv.esperienze.length - 1) {
         this.cv.esperienze.push(new EsperienzaImplementation());
       }
       Object.assign(this.cv.esperienze[this.countAttributesEsperienza], form.value);
       if (this.attributesFormazione.length === 0) {
-        console.log('add');
         this.addFormazione();
          /* this.backBlockForm(); */
       }else
       this.nextBlock();
-      console.log(this.countAttributesEsperienza);
     }
   }
   onPersonalFormazione(form: NgForm) {
@@ -178,25 +174,19 @@ export class CvComponent implements OnInit {
   }
   
   nextBlock() {
-    console.log(this.countAttributesFormazione);
-    console.log(this.cv.formazioni.length-1);
     if (this.countAttributesEsperienza < this.attributesEsperienza.length - 1) {
       this.countAttributesEsperienza++;
     } else if (this.countAttributesFormazione < this.attributesFormazione.length - 1) {      
       this.previewControlClicked('form',this.countAttributesFormazione);
       this.countAttributesFormazione++;
     }else if(this.cv.formazioni.length-1===this.countAttributesFormazione){
-      console.log('submit');
       this.submit();
     }
-    console.log(this.countAttributesFormazione);
-    console.log(this.cv.formazioni.length-1);
     
   }
   backBlockEsp() {
     if(this.countAttributesEsperienza===0){
       this.countAttributesPersonal=0;
-      console.log(this.countAttributesPersonal);
       this.previewControlClicked('personal',this.countAttributesPersonal);
     }else {
       this.countAttributesEsperienza = Math.max(0, this.countAttributesEsperienza - 1);

@@ -1,6 +1,6 @@
 .containerControll {
   position: relative;
-  background: radial-gradient(circle, #FF6E4C, #FF426C);
+  background: radial-gradient(circle, #FF6E4C, #F5DFD0);
   color: rgb(59, 40, 40);
   border-radius: 30px;
   box-shadow: -1px 0px 20px -11px #000000;
@@ -54,7 +54,7 @@ form {
 }
 
 .input-label {
-  font-size: 1.8em;
+  /* font-size: 1.8em; */
   color: #252323;
   z-index: 1;
   transition: font-size 0.3s ease;
@@ -80,7 +80,7 @@ h2{
 }
 .inputForm:hover {
   
-  font-size: 1.8em;
+  /* font-size: 1.8em; */
   .input-label {
     font-size: 1.2em;
   }

@@ -4,9 +4,9 @@ class MenuScene extends BaseScene {
     constructor(config,cv) {
       super('MenuScene',config);
       this.menu=[
-        {scene: 'PlayScene', text: 'Play'},
-        {scene: 'ScoreScene', text: 'Score'},
-        {scene: null, text: 'Exit'},
+        {scene: 'PlayScene', text: 'Play '},
+        {scene: 'ScoreScene', text: 'Score '},
+        {scene: null, text: 'Exit '},
       ];
       
     }
@@ -21,14 +21,14 @@ class MenuScene extends BaseScene {
           textGameO.setInteractive();
 
        textGameO.on('pointerover',()=>{
-           textGameO.setStyle({fill: '#FF0'});
+           textGameO.setStyle({fill: '#FF0',fontFamily: "Bangers, system-ui"});
        });
         textGameO.on('pointerout',()=>{
-            textGameO.setStyle({fill: '#CD00FF'});
+            textGameO.setStyle({fill: '#CD00FF',fontFamily: "Bangers, system-ui"});
         });
         textGameO.on('pointerup',()=>{
             menuItem.scene && this.scene.start(menuItem.scene);
-            if(menuItem.text === 'Exit'){
+            if(menuItem.text === 'Exit '){
                 this.game.destroy(true);
             }
         });

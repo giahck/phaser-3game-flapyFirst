@@ -22,9 +22,11 @@ export class CvService {
     this.isLoaded = true; 
   }
   async getCV(): Promise<void> {
+    console.log('getCV');
     if (this.isLoaded) {
       return;
     }
+    console.log('getCV');
     await this.user.restoreAuth();
 
     const userId = this.user.getId;
