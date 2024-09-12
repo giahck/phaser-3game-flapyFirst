@@ -15,11 +15,13 @@ public interface CvMapper {
     // Mappa da cvDto a Cv
     @Mapping(target = "esperienze", source = "esperienze")
     @Mapping(target = "formazioni", source = "formazioni")
+    @Mapping(target = "id", ignore = true)
     Cv toEntity(cvDto dto);
 
     // Mappa da Cv a cvDto
     @Mapping(target = "esperienze", source = "esperienze")
     @Mapping(target = "formazioni", source = "formazioni")
+    @Mapping(target = "id", ignore = true)
     cvDto toDto(Cv cv);
 
     // Mappa da cvDto.Esperienza a EsperienzaCv

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { BehaviorSubject, lastValueFrom, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, lastValueFrom, Observable, tap, throwError } from 'rxjs';
 import { Cv } from '../models/cv/cv.interface';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
@@ -43,6 +43,14 @@ export class CvService {
         console.error('An unexpected error occurred:', error);
       }
     }
+  }
+  postCv(cv: Cv):Observable<Cv>{
+    console.log(cv);
+    return this.http.post<Cv>(`${this.apiUrl}cv/save`, cv).pipe(
+      tap((cv: Cv) => {this.setCV(cv);}),
+      catchError(this.handleError)
+    );
+    
   }
 
 

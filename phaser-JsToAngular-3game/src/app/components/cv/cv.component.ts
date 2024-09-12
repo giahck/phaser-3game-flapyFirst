@@ -73,7 +73,6 @@ export class CvComponent implements OnInit {
     });
   }
   
-  
   private initializeAttributes(): void {
     this.attributesPersonal = this.convertToAttributes(this.cv, ['id', 'esperienze', 'formazioni']);
     this.attributesEsperienza = this.cv.esperienze.map(exp => this.convertToAttributes(exp));
@@ -101,8 +100,7 @@ export class CvComponent implements OnInit {
       if (this.attributesPersonal.length !== this.countAttributesPersonal + 1)
         this.countAttributesPersonal++;
       /* attivo formazione e disattivo personal e inserisco e visualizo i dati */ else {
-        this.switches.personal = false;
-        this.switches.esp = true;
+        this.previewControlClicked('esp',this.countAttributesEsperienza);
         if (this.cv.esperienze.length === 0) {
           this.addEsperienza(form);
          /*  this.nextBlock(); */
@@ -133,7 +131,6 @@ export class CvComponent implements OnInit {
       this.backBlockForm();
     }
   }
-  
   
   addEsperienza(form?: NgForm) {
     if (this.attributesEsperienza.length === this.attributesEsperienza.length) {
@@ -181,23 +178,26 @@ export class CvComponent implements OnInit {
   }
   
   nextBlock() {
+    console.log(this.countAttributesFormazione);
+    console.log(this.cv.formazioni.length-1);
     if (this.countAttributesEsperienza < this.attributesEsperienza.length - 1) {
       this.countAttributesEsperienza++;
     } else if (this.countAttributesFormazione < this.attributesFormazione.length - 1) {      
-      this.switches.esp = false;
-      this.switches.form = true;
+      this.previewControlClicked('form',this.countAttributesFormazione);
       this.countAttributesFormazione++;
+    }else if(this.cv.formazioni.length-1===this.countAttributesFormazione){
+      console.log('submit');
+      this.submit();
     }
-    console.log(this.attributesEsperienza);
-    console.log(this.attributesFormazione);
-    console.log(this.attributesFormazione);
+    console.log(this.countAttributesFormazione);
+    console.log(this.cv.formazioni.length-1);
     
   }
   backBlockEsp() {
     if(this.countAttributesEsperienza===0){
       this.countAttributesPersonal=0;
-      this.switches.personal=true;
-      this.switches.esp=false;
+      console.log(this.countAttributesPersonal);
+      this.previewControlClicked('personal',this.countAttributesPersonal);
     }else {
       this.countAttributesEsperienza = Math.max(0, this.countAttributesEsperienza - 1);
     }
@@ -207,87 +207,45 @@ export class CvComponent implements OnInit {
       this.countAttributesFormazione=-1;
       this.switches.form=false;
       this.switches.esp=true;
+      this.previewControlClicked('esp',this.countAttributesEsperienza);
     }else {
       this.countAttributesFormazione = Math.max(0, this.countAttributesFormazione - 1);
     }
   }
-  ngOnDestroy(): void {
-    if (this.cvSubscription) {
-      this.cvSubscription.unsubscribe();
-    }
-    if (this.userIdSubscription) {
-      this.userIdSubscription.unsubscribe();
+  previewControlClicked(str: string, i: number) {
+    switch (str) {
+      case "personal":
+        this.switches.personal = true;
+        this.switches.esp = false;
+        this.switches.form = false;
+        this.scrollToSection('personal-section');
+        break;
+      case "esp":
+        this.countAttributesEsperienza = i;
+        this.switches.personal = false;
+        this.switches.esp = true;
+        this.switches.form = false;
+        this.scrollToSection('esp-section');
+        break;
+      case "form":
+        this.countAttributesFormazione = i;
+        this.switches.personal = false;
+        this.switches.esp = false;
+        this.switches.form = true;
+        this.scrollToSection('form-section');
+        break;
     }
   }
-}
   
-  //metodo 2 col form normale nella seconda parte e dinamico nella prima senza del form (non intuitivo)
-  // this.cvSrv.getCV();
-  /*     this.cvSubscription = this.cvSrv.cvUser$.subscribe((cv) => {
-    this.cv = CvImplementation.fromDto(cv);
-    this.userIdSubscription = this.auth.userId$.subscribe((userId) => {
-      if (userId !== null) {
-        this.cv.id = userId;
-        console.log(this.cv.esperienze);
-        this.cv.esperienze.forEach((element) => {
-            Object.keys(element).forEach((key) => {
-              this.attributesFormazione.push({ nome: key, value: element[key as keyof Esperienza].toString() });
-            });
-          });
-        }
-      });
-      //  console.log(this.cv);
-    });
-    this.attributes=getUniqueKeys(this.cv).filter(
-      (key) => key !== "id" );
-      //this.attributesFormazione=getUniqueKeys(this.esperienzaInstance);
-      console.log(this.attributesFormazione);
-    //  console.log(this.cv);
+  private scrollToSection(sectionId: string) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  get currentAttribute() { 
-    // console.log(this.attributes[this.currentAttributeIndex]);
-      return this.attributes[this.currentAttributeIndex];
-   } 
-   get cvText(): string {
- //   console.log(this.cv);
-    const attributeName = this.attributes[this.currentAttributeIndex] as keyof CvImplementation;
-    const value = this.cv[attributeName];
-    this.isInputEmpty = value === '';
-    return typeof value === 'string' ? value : ''; // Restituisce una stringa vuota se il valore non è una stringa
   }
-
-  set cvText(value: string) {
-  //  console.log(value);
-    const attributeName = this.attributes[this.currentAttributeIndex] as keyof CvImplementation;
-    (this.cv[attributeName] as string) = value;
-    this.isInputEmpty = value.trim() === '';
+  submit(){
+    this.cvSrv.postCv(this.cv).subscribe();
   }
- nextAttribute(){
-   const attributeName = this.attributes[this.currentAttributeIndex] as keyof CvImplementation;
-   //console.log(this.attributes);
-   if(this.cv[attributeName] as string!==''){
-    // this.currentAttributeIndex = (this.currentAttributeIndex + 1) % this.attributes.length;
-    if(this.attributes[this.currentAttributeIndex+1]==='esperienze')
-      this.formazione();
-    else if(this.attributes.length>this.currentAttributeIndex + 1)
-      this.currentAttributeIndex++;
-    }
-  //  console.log(this.cv);
-}
-formazione(){
-  this.switches.form=true;
-  this.switches.personal=false;
-  //console.log('formazione')
- 
-  console.log(this.attributesFormazione);
-}
-
-
-onPersonalContact(form: NgForm) {
-  // Gestisci l'evento di submit qui
-  console.log(form.value);
-  console.log(this.cv);
-}
   ngOnDestroy(): void {
     if (this.cvSubscription) {
       this.cvSubscription.unsubscribe();
@@ -295,71 +253,5 @@ onPersonalContact(form: NgForm) {
     if (this.userIdSubscription) {
       this.userIdSubscription.unsubscribe();
     }
-  } */
-
-  /*//inserimento con validatori
-   ngOnInit(): void {
-    this.personalContact = this.fb.group({
-      id: [0],
-      nome: ["", Validators.required],
-      cognome: ["", Validators.required],
-      email: ["", Validators.required],
-      telefono: ["", Validators.required],
-      indirizzo: ["", Validators.required],
-      titolo: ["", Validators.required],
-      esperienze: this.fb.array([]),
-      formazioni: this.fb.array([]),
-      currentAttribute: ["", Validators.required], // Aggiungi un controllo di default
-    });
-    this.cvSrv.getCV();
-    
-    this.cvSubscription = this.cvSrv.cvUser$.subscribe((cv) => {
-      this.cv = cv;
-      console.log(this.cv);
-      this.attributes = this.getObjectKeys(this.cv).filter(
-        (key) => key !== "esperienze" && key !== "formazioni" && key !== "id"
-      );
-
-      //this.personalContact = this.fb.group({});
-
-      // Dynamically add controls for each attribute
-      this.attributes.forEach((attr) => {
-        console.log(attr);
-        this.personalContact.addControl(attr, this.fb.control(this.cv[attr] || "", Validators.required));
-      });
-      this.setCurrentAttributeControl();
-    });
-    
   }
-  private setCurrentAttributeControl() {
-    const currentAttr = this.currentAttribute;
-    console.log(currentAttr);
-    if (!this.personalContact.get(currentAttr)) {
-      this.personalContact.addControl(currentAttr, this.fb.control(this.cv[currentAttr] || "", Validators.required));
-    }
-  }
-  onPersonalContact() {
-    if (this.personalContact.valid) {
-      console.log(this.personalContact.value);
-    }else
-    {
-      console.log(this.personalContact.value);
-    }
-  }
-
-  getObjectKeys(obj: any): string[] {
-    return Object.keys(obj);
-  }
-
-  nextAttribute() {
-    this.currentAttributeIndex =
-      (this.currentAttributeIndex + 1) % this.attributes.length;
-  }
-
-  get currentAttribute() {
-    return this.attributes[this.currentAttributeIndex];
-  }
-
-  get currentAttributeValue() {
-    return this.cv ? this.cv[this.currentAttribute] : "";
-  } */
+}
