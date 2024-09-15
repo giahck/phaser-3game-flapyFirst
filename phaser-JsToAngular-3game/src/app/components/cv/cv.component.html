@@ -108,7 +108,9 @@
             
             <div  class="d-flex justify-content-center mt-3">
               <button type="button" class="input-empty" (click)="backBlockForm()">back</button>
-              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >next</button>
+              <button type="submit" [disabled]="!form.valid" [ngClass]="{'input-empty': form.valid, 'input-filled': !form.valid}" >
+                {{ submitPost ? 'submit' : 'next' }}
+              </button>
             </div>
           </form>
         </div>

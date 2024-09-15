@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { cleanupGame, initializeGame } from './js/game';
 import {  cleanupGameDino, initializeGameDino } from './jsDino/gameDino';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Cv } from '../../models/cv/cv.interface';
 import { CvService } from '../../service/cv.service';
+import { WebsocketService } from '../../service/websocket.service';
 @Component({
   selector: 'app-phaser-game',
   standalone: true,
@@ -12,7 +13,7 @@ import { CvService } from '../../service/cv.service';
   templateUrl: './phaser-game.component.html',
   styleUrls: ['./phaser-game.component.scss']
 })
-export class PhaserGameComponent implements OnInit,AfterViewInit {
+export class PhaserGameComponent implements OnInit,AfterViewInit,OnDestroy {
   cvSubscription!: Subscription;
   cv!:Cv;
   visibilityGame = true;
@@ -30,7 +31,7 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
       
       // Aggiungi altre immagini qui
   ];
-  constructor(private cvSrv:CvService) { }
+  constructor(private cvSrv:CvService,private webSocketService: WebsocketService) { }
 
   ngOnInit(): void {
     this.cvSrv.getCV();
@@ -40,8 +41,20 @@ export class PhaserGameComponent implements OnInit,AfterViewInit {
        // console.log(this.cv);
       }
     );
+    this.webSocketService.init();
+    this.webSocketService.onMessage((message: string) => {
+      console.log('Message from server:', message);      
+    });
   }
 
+  sendMessage() {
+    console.log('Sending message to server');
+    this.webSocketService.sendMessage('Hello from Angular!');
+  }
+
+  ngOnDestroy() {
+    this.webSocketService.disconnect();
+  }
   selectImage(index: number): void {
     if (this.selectedImageIndex === index) {
       this.selectedImageIndex = null;
