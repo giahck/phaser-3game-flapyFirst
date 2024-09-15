@@ -13,10 +13,10 @@ import { AuthService } from "./../../auth/auth.service";
   templateUrl: "./cv.component.html",
   styleUrl: "./cv.component.scss",
   /* il principio iniziale é non riscrivere html, uno per blocco*/
-  /* a blocchi dinamici quindi dinamico ma non linere (questo rende la lettura un po difficile) ma il codice e riutilizzabile ovunque
-  completamente controllato, in basso cé la versione comentata con i validatori ma il rischio di bug e estremamente aumentato
-  in qundo lutilizzo dei binding sugli atrributi cambia la logica costantemente al suo cambiamento quindi se si vuole rendere nuovi blocchi
-  bisogna modificare tutto il codice in quanto le funzioni non vengono richiamate ma hanno il cambio di stato costante, nel primo caso hai sia il controllo iniziale e poi hai
+  /* a blocchi dinamici quindi dinamico ma non linere (questo rende la lettura un po' difficile) ma il codice e' riutilizzabile ovunque
+  completamente controllato, in basso c'é la versione commentata con i validatori, ma e'estremamente superiore il rischio di un avere un bug 
+  in quanto l'utilizzo dei binding sugli attributi modifica la logica costantemente al suo cambiamento. Quindi se si vuole creare nuovi blocchi
+  bisogna modificare tutto il codice. Perche le funzioni non vengono richiamate ma hanno il cambio di stato costante, nel primo caso hai sia il controllo iniziale e poi hai
   i controlli instantanei, nei validatori hai i controlli instantanei ma alla fine il controllo lho fai dopo il submit quindi diventa ridontante
   e complesso*/ 
   /* il sistema fa una conversione delloggetto in quanto il back and non era dacordo con il front nei pensieri di gianluca quindi,
@@ -56,6 +56,7 @@ export class CvComponent implements OnInit, OnDestroy {
   countAttributesPersonal = 0;
   countAttributesEsperienza = 0;
   countAttributesFormazione = -1;
+  submitPost = false;
   constructor(private cvSrv: CvService, private auth: AuthService) {}
   ngOnInit(): void {
     this.initializeCv();
@@ -179,6 +180,8 @@ export class CvComponent implements OnInit, OnDestroy {
     } else if (this.countAttributesFormazione < this.attributesFormazione.length - 1) {      
       this.previewControlClicked('form',this.countAttributesFormazione);
       this.countAttributesFormazione++;
+      if(this.cv.formazioni.length-1===this.countAttributesFormazione)
+        this.submitPost=true;
     }else if(this.cv.formazioni.length-1===this.countAttributesFormazione){
       this.submit();
     }
@@ -193,6 +196,7 @@ export class CvComponent implements OnInit, OnDestroy {
     }
   }
   backBlockForm() {
+    this.submitPost=false;
     if(this.countAttributesFormazione===0){
       this.countAttributesFormazione=-1;
       this.switches.form=false;
@@ -218,6 +222,7 @@ export class CvComponent implements OnInit, OnDestroy {
         this.scrollToSection('esp-section');
         break;
       case "form":
+        
         this.countAttributesFormazione = i;
         this.switches.personal = false;
         this.switches.esp = false;
