@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Cv } from '../../models/cv/cv.interface';
 import { CvService } from '../../service/cv.service';
 import { WebsocketService } from '../../service/websocket.service';
+import { CookieService } from 'ngx-cookie-service';
 @Component({
   selector: 'app-phaser-game',
   standalone: true,
@@ -31,7 +32,7 @@ export class PhaserGameComponent implements OnInit,AfterViewInit,OnDestroy {
       
       // Aggiungi altre immagini qui
   ];
-  constructor(private cvSrv:CvService,private webSocketService: WebsocketService) { }
+  constructor(private coc:CookieService,private cvSrv:CvService,private webSocketService: WebsocketService) { }
 
   ngOnInit(): void {
     this.cvSrv.getCV();
@@ -41,16 +42,17 @@ export class PhaserGameComponent implements OnInit,AfterViewInit,OnDestroy {
        // console.log(this.cv);
       }
     );
-    this.webSocketService.init();
+/*     const token = localStorage.getItem('accessToken') || this.coc.get('accessToken');
+    this.webSocketService.init(token);
     this.webSocketService.onMessage((message: string) => {
       console.log('Message from server:', message);      
-    });
+    }); */
   }
 
-  sendMessage() {
+ /*  sendMessage() {
     console.log('Sending message to server');
     this.webSocketService.sendMessage('Hello from Angular!');
-  }
+  } */
 
   ngOnDestroy() {
     this.webSocketService.disconnect();
@@ -100,10 +102,10 @@ export class PhaserGameComponent implements OnInit,AfterViewInit,OnDestroy {
     const gameContainer = document.querySelector('.game-container')as HTMLElement;
     if (gameContainer) {
     
-      console.log(this.cv);
+     /*  console.log(this.cv); */
       setTimeout(() => {
-        console.log(this.cv);
-        initializeGameDino(gameContainer, this.cv);
+       /*  console.log(this.cv); */
+       initializeGame(gameContainer, this.cv);
       }, 500);
   }
 }}

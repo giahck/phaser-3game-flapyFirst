@@ -4,6 +4,7 @@ import MenuScene from "./scenes/MenuScene";
 import ScoreScene from "./scenes/ScoreScene";
 import PreloadScene from "./scenes/PreloadScene";
 import PauseScene from "./scenes/PauseScene";
+import Multiplayer from "./scenes/Multiplayer";
 import { pipe } from "rxjs";
 const WIDTH = window.innerWidth < 600 ? 400 : 800;
 const HEIGHT = 600;
@@ -13,7 +14,7 @@ const SHARED_CONFIG = {
   height: HEIGHT,
   startPosition: BIRD_POSITION,
 };
-const Scenes = [PreloadScene, MenuScene, ScoreScene, PlayScene, PauseScene];
+const Scenes = [PreloadScene, MenuScene,Multiplayer, ScoreScene, PlayScene, PauseScene];
 const createScenes = (Scene, cv) => new Scene(SHARED_CONFIG, cv);
 const initScenes = (cv) => Scenes.map((Scene) => createScenes(Scene, cv));
 
