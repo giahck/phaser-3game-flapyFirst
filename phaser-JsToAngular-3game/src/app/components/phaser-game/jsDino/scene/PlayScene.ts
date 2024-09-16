@@ -25,7 +25,7 @@ class PlayScene extends GameScene {
   }
   
   create() {
-    console.log('this.cv',this.cv);
+    /* console.log('this.cv',this.cv); */
     this.createEnvironment();
     this.createPlayer();
     this.createObstacles();

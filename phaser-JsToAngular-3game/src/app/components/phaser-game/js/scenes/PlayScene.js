@@ -49,6 +49,8 @@ class PlayScene extends BaseScene {
     } */
 
   create() {
+   
+    
     if (this.esperienzeFormazioni.length >= 2) {
       PIPES_TO_RENDER = this.esperienzeFormazioni.length;
     }

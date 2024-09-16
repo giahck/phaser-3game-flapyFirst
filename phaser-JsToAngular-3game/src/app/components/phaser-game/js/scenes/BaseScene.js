@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { WebsocketService } from '../../../../service/websocket.service'; 
+import { CookieService } from 'ngx-cookie-service';
 class BaseScene extends Phaser.Scene {
     constructor(key,config) {
       super(key);
@@ -7,6 +9,8 @@ class BaseScene extends Phaser.Scene {
       this.fontSize = 40;
       this.lineHeight = 42;
       this.fontOptions = {fontSize: `${this.fontSize}px`, fill: '#CD00FF', fontFamily: "Bangers, system-ui"};
+      this.webSocketService = new WebsocketService();
+      this.cookieService = new CookieService();
     }
     
     create(){
@@ -28,7 +32,7 @@ class BaseScene extends Phaser.Scene {
             this.scene.start('MenuScene');
         })
     }
-   
+  
     createMenu(menu, setupMenuEvents) {
         let lastMenuPositionY = -50;
     

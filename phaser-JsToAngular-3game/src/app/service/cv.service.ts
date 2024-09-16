@@ -22,11 +22,11 @@ export class CvService {
     this.isLoaded = true; 
   }
   async getCV(): Promise<void> {
-    console.log('getCV');
+   /*  console.log('getCV'); */
     if (this.isLoaded) {
       return;
     }
-    console.log('getCV');
+   /*  console.log('getCV'); */
     await this.user.restoreAuth();
 
     const userId = this.user.getId;
@@ -47,7 +47,7 @@ export class CvService {
     }
   }
   postCv(cv: Cv):Observable<Cv>{
-    console.log(cv);
+    /* console.log(cv); */
     return this.http.post<Cv>(`${this.apiUrl}cv/save`, cv).pipe(
       tap((cv: Cv) => {this.setCV(cv);}),
       catchError(this.handleError)
