@@ -30,6 +30,7 @@ class BaseScene extends Phaser.Scene {
         
         backBtn.on('pointerup', () => {
             this.scene.start('MenuScene');
+            this.webSocketService.disconnect();
         })
     }
   

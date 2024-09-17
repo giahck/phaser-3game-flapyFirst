@@ -48,12 +48,20 @@ export class WebsocketService {
 
   onMessage(callback: (data: any) => void) {
     this.socket.on('infoClient', (...data) => {
+     /*  console.log('Received infoClient data:', data); */
+      callback(data);
+    });
+  }
+  sendStartGame(room: string) {
+    console.log(room);
+    this.socket.emit('play', room);
+  }
+  lobyCountdown(callback: (data: any) => void) {
+    this.socket.on('countdown', (data) => {
       console.log('Received infoClient data:', data);
       callback(data);
     });
-    
   }
-
   disconnect() {
     console.log('Disconnecting socket');
     if (this.socket) {

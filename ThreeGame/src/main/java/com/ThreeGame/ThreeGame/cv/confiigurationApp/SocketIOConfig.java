@@ -39,8 +39,6 @@ public class SocketIOConfig {
                 }
             }
         });
-
-
       
         SocketIOServer server = new SocketIOServer(config);
         server.addListeners(socketIOEventListener);
