@@ -13,8 +13,8 @@ Più giochi, più ottieni visibilità! Il punteggio che accumuli nei giochi ti p
 
 ## 🔧 **Tecnologie Utilizzate**
 - **Backend**: Java Spring boot
-- **Frontend**:
-  - **Flappy Bird**: JavaScript nativo
+- **Frontend**: Angular
+  - **Flappy Bird**: JavaScript nativo (con Phaser framework)
   - **Dino**: TypeScript (con Phaser framework)
 - **Multiplayer**: Gestito tramite **Socket.io**
 - **Database**: **Postgres**, presto migrato su **AWS Cloud** per garantire scalabilità e affidabilità.
