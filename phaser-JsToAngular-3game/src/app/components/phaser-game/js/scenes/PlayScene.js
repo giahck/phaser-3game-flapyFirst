@@ -119,6 +119,7 @@ class PlayScene extends BaseScene {
   }
   countDown() {
     this.initialTime--;
+    console.log(this.initialTime);
     this.countDownText.setText("Fly in: " + this.initialTime);
     if (this.initialTime <= 0) {
       this.countDownText.setText("");
@@ -369,6 +370,7 @@ class PlayScene extends BaseScene {
     if (this.esperienzeFormazioni.length > 0) 
     this.viewCVcolide();
     this.isGameRunning = false;
+      
     this.time.addEvent({
       delay: 5000,
       callback: () => {

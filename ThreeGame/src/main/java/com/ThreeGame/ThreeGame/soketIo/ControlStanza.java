@@ -57,15 +57,20 @@ public class ControlStanza {
     }
 
     public synchronized void removeClientFromRoom(SocketIOClient client) {
+        String roomName = null;
         for (Map.Entry<String, List<SocketIOClient>> entry : stanze.entrySet()) {
             if (entry.getValue().remove(client)) {
+                roomName = entry.getKey();
                 if (entry.getValue().isEmpty()) {
-                    stanze.remove(entry.getKey());
+                    stanze.remove(roomName);
                 }
                 break;
             }
         }
         clientInfoMap.remove(client.getSessionId());
+        if (roomName != null) {
+            infoClientUpdate(roomName);
+        }
     }
 
     public synchronized Map<String, List<SocketIOClient>> getAllClientsInRooms() {
@@ -78,6 +83,26 @@ public class ControlStanza {
 
     public synchronized ClientInfo getClientInfo(UUID clientId) {
         return clientInfoMap.get(clientId);
+    }
+
+    public synchronized void infoClientUpdate(String roomName) {
+        Map<String, List<SocketIOClient>> allClientsInRooms = getAllClientsInRooms();
+        List<SocketIOClient> clientsInRoom = allClientsInRooms.get(roomName);
+
+        if (clientsInRoom != null) {
+            List<ClientInfo> clientInfos = new ArrayList<>();
+            for (SocketIOClient c : clientsInRoom) {
+                ClientInfo info = getClientInfo(c.getSessionId());
+                if (info != null) {
+                    clientInfos.add(info);
+                }
+            }
+
+            ClientInfo[] clientInfoArray = clientInfos.toArray(new ClientInfo[0]);
+            for (SocketIOClient c : clientsInRoom) {
+                c.sendEvent("infoClient", clientInfoArray);
+            }
+        }
     }
 
 }

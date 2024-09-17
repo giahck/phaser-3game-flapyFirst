@@ -1,12 +1,13 @@
 import BaseScene from './BaseScene';
 
-const clientInfo = {
-
-};
 class Multiplayer extends BaseScene {
     constructor(config,cv) {
       super('Multiplayer',{...config , canGoBack: true});
       this.cv = cv;
+      this.textAr = [];
+      this.clientInfo = {};
+      this.room='';
+      this.countdownTxt = null;
     }
      getCookie(name) {
       const value = `; ${document.cookie}`;
@@ -17,8 +18,8 @@ class Multiplayer extends BaseScene {
     create(){
         super.create();
         this.initWebSocket();
-       
-       
+        this.playButton();
+        this.createCountdownText();
     }
 
     initWebSocket(){
@@ -29,25 +30,68 @@ class Multiplayer extends BaseScene {
           return;
         }
         this.clientInfo = clientInfo;
-        this.clientInfo.name = this.cv.nome;
+        this.room = this.clientInfo.roomName;
+        this.clientInfo.name = this.cv.nome+" "+this.cv.cognome;
         this.webSocketService.sendInfo(this.clientInfo)
         this.webSocketService.onMessage((data) => {
           this.clientInfo = data;
+          console.log('Received infoClient data:', this.clientInfo );
           this.visualaStanza();
         });
       }).catch((error) => {
         console.error('WebSocket init error:', error);
       });
     }
-    visualaStanza(){
-      const names = this.clientInfo.map(item => item.name);
-      let yPosition = 50; // Posizione iniziale per il testo
-      names.forEach(name => {
-        this.add.text(50, yPosition, name, { fontSize: '32px', fill: '#fff' });
-        yPosition += 40; // Incrementa la posizione Y per il prossimo nome
+    createCountdownText() {
+      this.countdownText = this.add.text(this.config.width / 2, this.config.height / 2, '', { fontSize: '64px', fill: '#fff', fontFamily: "Bangers, system-ui" })
+        .setOrigin(0.5);
+    }
+    playButton(){
+      const playButton = this.add.text(this.config.width / 2, this.config.height - 100, 'Play ', { fontSize: '45px', fill: '#fff',fontFamily: "Bangers, system-ui" }).setOrigin(0.5).setInteractive();
+      playButton.on('pointerup', () => {
+        console.log(this.room);
+        this.webSocketService.sendStartGame(this.room);
+        this.webSocketService.lobyCountdown((data) => {
+          console.log('Received countdown data:', data);
+          this.countdownText.setText(data);
+          if (data === 0) {
+            this.countdownText.destroy();
+          
+            this.scene.start('PlayScene', {webSocketService: this.webSocketService, clientInfo: this.clientInfo});
+
+          }
+        });
+        /* this.scene.start('PlayScene', {webSocketService: this.webSocketService, clientInfo: this.clientInfo}); */
+      });
+      playButton.on('pointerover', () => {
+        playButton.setStyle({ fill: '#ff0' }); 
+      });
+    
+      playButton.on('pointerout', () => {
+        playButton.setStyle({ fill: '#fff' });
       });
     }
 
+
+    visualaStanza(){
+      this.textAr.forEach(textObject => textObject.destroy());
+      this.textAr = [];
+      const names = this.clientInfo.map(item => item.name);
+      let yPosition = 50; 
+      names.forEach((name,index) => {
+        
+      this.textAr.push(this.add.text(50, yPosition, index+1+": "+name+" ", { fontSize: '32px', fill: this.getRandomColor(),fontFamily: "Bangers, system-ui" }));
+        yPosition += 40; 
+      });
+    }
+    getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
    /* this.scene.start('PlayScene'); */
     
 }
