@@ -11,4 +11,6 @@ public class ClientInfo {
     private UUID id;
     private String name;
     private String roomName;
+    private Boolean attivo;
+    private Integer score;
 }
