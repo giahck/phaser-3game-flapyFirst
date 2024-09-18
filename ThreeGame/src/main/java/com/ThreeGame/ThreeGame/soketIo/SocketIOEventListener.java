@@ -4,29 +4,31 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Component
 public class SocketIOEventListener {
     private final ControlStanza controlStanza = new ControlStanza();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final Map<String, Set<UUID>> playClients = new HashMap<>();
-    private final Map<String, Integer> playCounter = new HashMap<>(); // Add this line
+    @Setter
+    private long id;
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
+
         String roomName = controlStanza.assegnaStanza(client);
         if (roomName != null) {
             client.joinRoom(roomName);
             ClientInfo clientInfo = new ClientInfo();
             clientInfo.setRoomName(roomName);
             clientInfo.setId(client.getSessionId());
+            clientInfo.setAttivo(false);
+            clientInfo.setScore(0);
             controlStanza.addClientInfo(clientInfo);
             client.sendEvent("infoClient", clientInfo);
         }
@@ -47,44 +49,53 @@ public class SocketIOEventListener {
             controlStanza.infoClientUpdate(roomName);
         }
     }
+
     @OnEvent("play")
     public synchronized void onPlay(SocketIOClient client, String roomName) {
-        Map<String, List<SocketIOClient>> allClientsInRooms = controlStanza.getAllClientsInRooms();
+        controlStanza.PlayClients(client, roomName);
 
-        if (roomName != null) {
-            playClients.putIfAbsent(roomName, new HashSet<>());
-            Set<UUID> clientsWhoPlayed = playClients.get(roomName);
+    }
 
-            if (!clientsWhoPlayed.contains(client.getSessionId())) {
-                clientsWhoPlayed.add(client.getSessionId());
-                playCounter.put(roomName, playCounter.getOrDefault(roomName, 0) + 1);
-                List<SocketIOClient> clientsInRoom = allClientsInRooms.get(roomName);
-                System.out.println(playCounter.get(roomName));
-                System.out.println(clientsInRoom.size());
+    @OnEvent("morto")
+    public synchronized void onMorto(SocketIOClient client, ClientInfo clientInfo) {
+        /* stampa();*/
 
+        clientInfo.setAttivo(true);
 
-                if (playCounter.get(roomName) == clientsInRoom.size() && clientsInRoom.size() == 2) {
-                    AtomicInteger count = new AtomicInteger(3);
+        controlStanza.clientInfoMap.put(client.getSessionId(), clientInfo);
+        System.out.println(controlStanza.getAllClientInfoMap());
 
-                    scheduler.scheduleAtFixedRate(() -> {
-                        if (count.get() >= 0) {
-                            for (SocketIOClient c : clientsInRoom) {
-                                c.sendEvent("countdown", count.get());
-                            }
-                            count.getAndDecrement();
-                        }
-                    }, 0, 1, TimeUnit.SECONDS);
-
-                    scheduler.schedule(() -> startGame(roomName), 3, TimeUnit.SECONDS);
-                }
+        // Send the updated client info to all clients in the room
+        controlStanza.getAllClientsInRooms().entrySet().forEach(e -> {
+            if (e.getValue().contains(client)) {
+                List<ClientInfo> clientInfos = e.getValue().stream()
+                        .map(c -> controlStanza.getClientInfo(c.getSessionId()))
+                        .collect(Collectors.toList());
+                e.getValue().forEach(b -> b.sendEvent("infoClient", clientInfos));
             }
-        }
+        });
     }
 
-    private void startGame(String roomName) {
-        System.out.println("Starting game in room: " + roomName);
-        // Logica per avviare il gioco
+    public void stampa() {
+        System.out.println("Stanze");
+        controlStanza.getAllClientsInRooms().entrySet().forEach(e -> {
+            System.out.println("Room: " + e.getKey() + " has clients: ");
+            e.getValue().forEach(b -> System.out.println(b.getSessionId()));
+        });
+        System.out.println("playClients");
+        controlStanza.getAllPlayClients().entrySet().stream().forEach(e -> {
+            System.out.println(e.getKey() + " " + e.getValue());
+        });
+        System.out.println("ClientInfo");
+        System.out.println(controlStanza.getAllClientInfoMap());
+        System.out.println("playCounter");
+        System.out.println(controlStanza.getAllPlayCounter());
     }
+
+}
+
+
+
 
 
     /*   @OnEvent("infoClient")
@@ -121,6 +132,6 @@ public class SocketIOEventListener {
             }
         }
     }*/
-}
+
 
 

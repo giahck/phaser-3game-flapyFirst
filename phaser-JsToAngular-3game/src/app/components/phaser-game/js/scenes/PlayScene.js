@@ -17,13 +17,15 @@ class PlayScene extends BaseScene {
     this.texts = null;
     this.pipeHorizontalDisty = 0;
     this.flapVelocity = 300;
-
+    this.webSocket = false;
+    this.mortoMultiplayer = true;
     this.score = 0;
     this.scoreText = "";
     this.bestScoreText = "";
     this.scoreSubscription = null;
     this.bestScore = localStorage.getItem("highScore") || 0;
-
+    this.clientInfoMuvi = [];
+    this.clientInfo = [];
     this.currentDifficulty = "easy";
     this.difficulties = {
       easy: {
@@ -40,7 +42,12 @@ class PlayScene extends BaseScene {
       },
     };
   }
-
+  init(data) {
+    this.webSocketService=data.webSocketService;
+    this.clientMyInfo = data.clientMyInfo;
+    this.clientInfo = data.clientInfo;
+   
+  }
   /*  preload(){
         this.load.image('sky', 'assets/sky.png');
         this.load.image('bird', 'assets/bird.png');
@@ -49,7 +56,23 @@ class PlayScene extends BaseScene {
     } */
 
   create() {
-   
+    super.create();
+    if(this.webSocketService){
+      this.webSocket=true;
+      this.clientInfo = this.clientInfo.filter(client => client.id !== this.clientMyInfo.id);
+      this.webSocketService.onMessagePlay((data) => {
+        this.clientInfo = data;
+      
+        this.clientMyInfo=data.find(client => client.id === this.clientMyInfo.id);
+    
+        /* this.clientInfo = this.clientInfo.filter(client => client.id !== this.clientMyInfo.id); */
+        console.log('Received data:', this.clientInfo);
+        console.log('Received data:', this.clientMyInfo);
+        this.updateClientPositions();
+      });
+      this.multiPlajer();
+    
+    }
     
     if (this.esperienzeFormazioni.length >= 2) {
       PIPES_TO_RENDER = this.esperienzeFormazioni.length;
@@ -58,7 +81,6 @@ class PlayScene extends BaseScene {
     this.isGameRunning = true;
     /*  this.createBg(); */
     this.currentDifficulty = "easy";
-    super.create();
     this.createBird();
     this.createPipes();
     this.createColliders();
@@ -86,6 +108,42 @@ class PlayScene extends BaseScene {
     this.checkGameStatus();
     this.ricicloPipe();
   }
+  multiPlajer(){
+    this.clientInfoMuvi = this.clientInfo.map((key,index) =>{
+      const yPosition = this.config.height / 2 + index * 50;
+    const ball = this.add.circle(this.config.width - 50, yPosition, 20, 0xff0000).setDepth(2);
+    const nameText = this.add.text(this.config.width - 50, yPosition - 20, key.name, {
+      fontSize: '15px',
+      fill: '#ffffff',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5).setDepth(2);
+    return { ball, nameText, id: key.id };
+  });
+
+  }
+  updateClientPositions() {
+    this.clientInfoMuvi.forEach((clientMuvi) => {
+      console.log(this.clientInfo.find(c => c.id === clientMuvi.id));
+      const client = this.clientInfo.find(c => c.id === clientMuvi.id);
+      if (client && client.attivo) {
+        this.tweens.add({
+          targets: [clientMuvi.ball, clientMuvi.nameText],
+          x: this.config.width / 2 - 300, 
+          duration: 4600, 
+          ease: 'Linear'
+        });
+      } else {
+        this.tweens.add({
+          targets: [clientMuvi.ball, clientMuvi.nameText],
+          x: this.config.width - 50,
+          duration: 1000, 
+          ease: 'Power2'
+        });
+      }
+    });
+  }
+
+
   listenToEvents() {
     if (this.pauseEvent) {
       return;
@@ -102,12 +160,7 @@ class PlayScene extends BaseScene {
         this.timedEvent.remove();
       }
       this.countDownText = this.add
-        .text(
-          this.screenCenter[0],
-          this.screenCenter[1] + 200,
-          "Fly in: " + this.initialTime,
-          this.fontOptions
-        )
+        .text(this.screenCenter[0], this.screenCenter[1] + 200, "Fly in: " + this.initialTime, this.fontOptions)
         .setOrigin(0.5, 0);
       this.timedEvent = this.time.addEvent({
         delay: 1000,
@@ -356,6 +409,14 @@ class PlayScene extends BaseScene {
       this.bestScoreText.setFill("#ff0000");
     }
   }
+  deadSoket(){
+    if(this.mortoMultiplayer){
+    this.webSocketService.sendMorto(this.clientMyInfo);
+    this.mortoMultiplayer=false;
+    console.log(this.clientInfo);
+  }
+ /*  console.log(this.clientInfo); */
+  }
   gameOver() {
     /* this.bird.x=this.config.startPosition.x;
         this.bird.y=this.config.startPosition.y;
@@ -370,7 +431,10 @@ class PlayScene extends BaseScene {
     if (this.esperienzeFormazioni.length > 0) 
     this.viewCVcolide();
     this.isGameRunning = false;
-      
+  if(this.webSocket)
+    this.deadSoket()
+    else{
+
     this.time.addEvent({
       delay: 5000,
       callback: () => {
@@ -378,6 +442,7 @@ class PlayScene extends BaseScene {
       },
       loop: false,
     });
+    }
   }
   flap() {
     if (this.isPaused) {

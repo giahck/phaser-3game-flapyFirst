@@ -15,7 +15,7 @@ public class SocketIOConfig {
     @Autowired
     private SocketIOEventListener socketIOEventListener;
     @Autowired
-    private JwtTool jwtFilter;
+    private JwtTool jwtTool;
     @Bean
     public SocketIOServer socketIOServer() {
         System.out.println("SocketIOConfig.socketIOServer");
@@ -31,7 +31,10 @@ public class SocketIOConfig {
             public AuthorizationResult getAuthorizationResult(HandshakeData data) {
                 String token = data.getSingleUrlParam("token");
                 try {
-                    jwtFilter.verifyToken(token);
+                    jwtTool.verifyToken(token);
+                    long id = Integer.parseInt(jwtTool.getIdFromToken(token));
+
+                    socketIOEventListener.setId(id);
                     return AuthorizationResult.SUCCESSFUL_AUTHORIZATION;
                 } catch (Exception e) {
                     System.out.println("Errore di autorizzazione: " + e.getMessage());
@@ -39,7 +42,7 @@ public class SocketIOConfig {
                 }
             }
         });
-      
+
         SocketIOServer server = new SocketIOServer(config);
         server.addListeners(socketIOEventListener);
         server.start();

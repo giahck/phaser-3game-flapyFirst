@@ -46,22 +46,59 @@ export class WebsocketService {
     this.socket.emit('infoClient', clientInfo);
   }
 
+ /*  onMessage(callback: (data: any) => void) {
+    const listener = (data:any) => {
+      callback(data);
+    };
+    this.socket.on('infoClient', listener);
+     return () => {
+      this.socket.off('infoClient', listener);
+    }; 
+  } */
   onMessage(callback: (data: any) => void) {
     this.socket.on('infoClient', (...data) => {
      /*  console.log('Received infoClient data:', data); */
       callback(data);
     });
   }
+  onMessagePlay(callback: (data: any) => void) {
+    this.socket.on('infoClient', (data) => {
+     /*  console.log('Received infoClient data:', data); */
+      callback(data);
+    });
+  }
+  
   sendStartGame(room: string) {
     console.log(room);
     this.socket.emit('play', room);
   }
   lobyCountdown(callback: (data: any) => void) {
-    this.socket.on('countdown', (data) => {
-      console.log('Received infoClient data:', data);
+    const listener = (data:any) => {
+      callback(data);
+      if (data === 0) {
+        this.socket.off('countdown', listener);
+      }
+    };
+    this.socket.on('countdown', listener);
+  }
+  lobyWait(callback: (data: string) => void) {
+    this.socket.once('waiting', (data) => {
       callback(data);
     });
   }
+  sendMorto(clientInfo: any) {
+    this.socket.emit('morto', clientInfo);
+  }
+
+  removeListener(event: string, listener: (...args: any[]) => void) {
+    if (this.socket) {
+      /* console.log('Removing listener for event', event, listener); */
+      this.socket.off(event);  // Rimuovi il listener per l'evento specifico
+    } else {
+      console.warn('Socket is not initialized');
+    }
+  }
+
   disconnect() {
     console.log('Disconnecting socket');
     if (this.socket) {
