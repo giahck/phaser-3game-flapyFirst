@@ -6,7 +6,7 @@ import PreloadScene from "./scenes/PreloadScene";
 import PauseScene from "./scenes/PauseScene";
 import Multiplayer from "./scenes/Multiplayer";
 import { pipe } from "rxjs";
-const WIDTH = window.innerWidth < 600 ? 400 : 800;
+const WIDTH = window.innerWidth < 850 ? 640 : 800;
 const HEIGHT = 600;
 const BIRD_POSITION = { x: WIDTH * 0.1, y: HEIGHT / 2 };
 const SHARED_CONFIG = {

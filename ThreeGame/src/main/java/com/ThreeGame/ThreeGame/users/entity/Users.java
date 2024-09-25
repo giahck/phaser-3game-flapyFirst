@@ -32,12 +32,22 @@ public class Users implements UserDetails {
     @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Cv cv;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_giochi",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "giochi_id")
+    )
+    private List<Giochi> giochi;
+
     @Enumerated(EnumType.STRING)
     private Ruolo ruolo;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(ruolo.name()));
     }
+
 
     @Override
     public String getPassword() {
