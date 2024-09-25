@@ -76,7 +76,7 @@ export class WebsocketService {
     const listener = (data:any) => {
       callback(data);
       if (data === 0) {
-        this.socket.off('countdown', listener);
+        this.socket.off('countdown');
       }
     };
     this.socket.on('countdown', listener);

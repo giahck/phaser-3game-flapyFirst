@@ -21,6 +21,7 @@ class PlayScene extends BaseScene {
     this.mortoMultiplayer = true;
     this.score = 0;
     this.scoreText = "";
+    this.textPool = [];
     this.bestScoreText = "";
     this.scoreSubscription = null;
     this.bestScore = localStorage.getItem("highScore") || 0;
@@ -46,7 +47,8 @@ class PlayScene extends BaseScene {
     this.webSocketService=data.webSocketService;
     this.clientMyInfo = data.clientMyInfo;
     this.clientInfo = data.clientInfo;
-   
+    /* this.esperienzeFormazioni=[]
+    this.cv = [] */
   }
   /*  preload(){
         this.load.image('sky', 'assets/sky.png');
@@ -64,19 +66,17 @@ class PlayScene extends BaseScene {
         this.clientInfo = data;
       
         this.clientMyInfo=data.find(client => client.id === this.clientMyInfo.id);
-    
-        /* this.clientInfo = this.clientInfo.filter(client => client.id !== this.clientMyInfo.id); */
-        console.log('Received data:', this.clientInfo);
-        console.log('Received data:', this.clientMyInfo);
+
         this.updateClientPositions();
       });
       this.multiPlajer();
     
     }
     
-    if (this.esperienzeFormazioni.length >= 2) {
+    if (this.esperienzeFormazioni.length >= 2 && this.esperienzeFormazioni.length <= 4) {
       PIPES_TO_RENDER = this.esperienzeFormazioni.length;
-    }
+    }else
+    PIPES_TO_RENDER=4;
     this.prevTextdiferent = Math.abs(this.esperienzeFormazioni.length - 1 - 6); //7 é la dificolta normal
     this.isGameRunning = true;
     /*  this.createBg(); */
@@ -123,7 +123,6 @@ class PlayScene extends BaseScene {
   }
   updateClientPositions() {
     this.clientInfoMuvi.forEach((clientMuvi) => {
-      console.log(this.clientInfo.find(c => c.id === clientMuvi.id));
       const client = this.clientInfo.find(c => c.id === clientMuvi.id);
       if (client && client.attivo) {
         this.tweens.add({
@@ -326,34 +325,36 @@ class PlayScene extends BaseScene {
     lPipe.x = uPipe.x;
     lPipe.y = uPipe.y + pipeVerticalDisty;
     //visualizazzione dei dati cv.
-    if (this.prevTextdiferent >= 0&& this.esperienzeFormazioni.length > 0) {
-      if (i === undefined) {
-        i = Math.floor(Math.random() * this.esperienzeFormazioni.length);
-      }
-      const { nome, tipo, luogo, descrizione, dataInizio, dataFine } =
-        this.esperienzeFormazioni[i];
-      const cvLines = [
+    if (this.prevTextdiferent >= 0 && this.esperienzeFormazioni.length > 0) {
+      i = i !== undefined ? i : Math.floor(Math.random() * this.esperienzeFormazioni.length);
+  
+      const { nome, tipo, luogo, descrizione, dataInizio, dataFine } = this.esperienzeFormazioni[i];
+      const concatenatedText = [
         ` ${tipo} \n`,
         `${nome} \n\n`,
         `${luogo} \n\n`,
         `${descrizione} \n\n`,
-        `${dataInizio}  ${dataFine}`,
-      ];
+        `${dataInizio}  ${dataFine}`
+      ].join(" ");
+  
       const textX = uPipe.x + uPipe.width + 300;
       const textY = 50;
-      const concatenatedText = cvLines.join(" ");
-      cvLines.forEach((line, index) => {
-        const text = this.add
-          .text(textX, textY, concatenatedText, {
-            fontSize: "45px",
-            fill: "#ffffff",
-            fontFamily: "Bangers, system-ui",
-            wordWrap: { width: pipeHorizontalDisty - 100 },
-          })
-          .setOrigin(0.5, 0);
-
-        this.texts.add(text);
-      });
+  
+      let text;
+      if (this.textPool.length > 0) {
+        text = this.textPool.pop();
+        text.setText(concatenatedText);
+      } else {
+        text = this.add.text(textX, textY, concatenatedText, {
+          fontSize: "45px",
+          fill: "#ffffff",
+          fontFamily: "Bangers, system-ui",
+          wordWrap: { width: pipeHorizontalDisty - 100 },
+        }).setOrigin(0.5, 0);
+      }
+  
+      text.setPosition(textX, textY); // Imposta la posizione una volta sola
+      this.texts.add(text); // Aggiungi il testo alla scena
     }
   }
 
@@ -374,6 +375,10 @@ class PlayScene extends BaseScene {
     if (this.isGameRunning && !this.isPaused) {
       this.texts.getChildren().forEach((text) => {
         text.x -= (150 * this.game.loop.delta) / 1000;
+        if (text.getBounds().right <= 0) {
+          this.texts.remove(text);
+          this.textPool.push(text);
+        }
       });
     }
   }
@@ -413,20 +418,13 @@ class PlayScene extends BaseScene {
     if(this.mortoMultiplayer){
     this.webSocketService.sendMorto(this.clientMyInfo);
     this.mortoMultiplayer=false;
-    console.log(this.clientInfo);
   }
  /*  console.log(this.clientInfo); */
   }
   gameOver() {
-    /* this.bird.x=this.config.startPosition.x;
-        this.bird.y=this.config.startPosition.y;
-        this.bird.body.velocity.y=0; */
-
     this.physics.pause();
     this.bird.setTint(0xff0000);
     this.texts.clear(true, true);
-    /* this.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-       this.input.off('pointerdown', this.flap, this); */
     this.saveScore();
     if (this.esperienzeFormazioni.length > 0) 
     this.viewCVcolide();
