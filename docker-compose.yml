@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./ThreeGame  # Percorso del progetto Spring Boot
+    ports:
+      - "8080:8080"  # Espone la porta 8080
+    volumes:
+      - ./ThreeGame/env.properties:/app/env.properties  # Monta il file env.properties all'interno del container
+
+  frontend:
+    build:
+      context: ./phaser-JsToAngular-3game  # Percorso del progetto Angular
+    ports:
+      - "4200:80"  # Espone la porta 4200 per il frontend (modificato per evitare conflitti con Nginx)
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"  # Espone la porta 80 per il proxy Nginx
+    volumes:
+      - ./phaser-JsToAngular-3game/my-angular-app.conf:/etc/nginx/conf.d/default.conf  # Monta il file di configurazione Nginx
+      - ./phaser-JsToAngular-3game/dist:/usr/share/nginx/html  # Monta i file di output di Angular
+    depends_on:
+      - frontend
+      - backend
+
+networks:
+  default:
+    driver: bridge
