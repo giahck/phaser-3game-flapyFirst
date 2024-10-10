@@ -36,7 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-
+	 System.out.println("Request Method: " + request.getMethod());
+        System.out.println("Request URI: " + request.getRequestURI());
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new UnauthorizedException("Error in authorization, token missing!");
         }
@@ -53,6 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(currentUser, accessToken, currentUser.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
              //   System.out.println("JWT");
+
             } else {
                 throw new RuntimeException("Utente non trovato");
             }
@@ -107,7 +109,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludedPaths = {"/auth/**"};
+        String[] excludedPaths = {"/auth/**","/api/auth/**"};
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (String path : excludedPaths) {

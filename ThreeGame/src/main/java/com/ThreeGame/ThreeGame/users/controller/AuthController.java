@@ -30,7 +30,7 @@ public class AuthController {
     private String clientSecret;
 
 
-    @GetMapping("/auth/url")
+    @GetMapping("/api/auth/url")
     public ResponseEntity<UrlDto> auth() {
         String url = new GoogleAuthorizationCodeRequestUrl(clientId,
                 "http://192.168.1.123:4200",
@@ -44,7 +44,7 @@ public class AuthController {
 
 
 
-    @GetMapping("/auth/callback")
+    @GetMapping("/api/auth/callback")
     public ResponseEntity<TokenDto> callback(@RequestParam("code") String code) throws URISyntaxException {
 
         try {
