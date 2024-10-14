@@ -33,7 +33,14 @@ class BaseScene extends Phaser.Scene {
             this.webSocketService.disconnect();
         })
     }
-  
+    shutdown() {
+      console.log('Shutting down scene and disconnecting WebSocket');
+      if (this.webSocketService) {
+        this.webSocketService.disconnect();
+      } else {
+        console.error('webSocketService is undefined');
+      }
+    }
     createMenu(menu, setupMenuEvents) {
         let lastMenuPositionY = -50;
     

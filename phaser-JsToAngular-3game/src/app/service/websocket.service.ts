@@ -19,7 +19,7 @@ export class WebsocketService {
         return;
       }
 
-      this.socket = io('https://giahck.it:9092/api/', {
+      this.socket = io('wss://giahck.it/socket.io/', {
         transports: ['websocket'],
         query: { token: token },
       });

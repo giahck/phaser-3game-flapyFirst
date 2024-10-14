@@ -14,10 +14,10 @@ import { CookieService } from 'ngx-cookie-service';
   templateUrl: './phaser-game.component.html',
   styleUrls: ['./phaser-game.component.scss']
 })
-export class PhaserGameComponent implements OnInit,AfterViewInit,OnDestroy {
+export class PhaserGameComponent implements OnInit,/* AfterViewInit, */OnDestroy {
   cvSubscription!: Subscription;
   cv!:Cv;
-  visibilityGame = true;
+  visibilityGame = false;
   imageClicked = false;
  
   isImageClicked = false;
@@ -42,17 +42,9 @@ export class PhaserGameComponent implements OnInit,AfterViewInit,OnDestroy {
        // console.log(this.cv);
       }
     );
-/*     const token = localStorage.getItem('accessToken') || this.coc.get('accessToken');
-    this.webSocketService.init(token);
-    this.webSocketService.onMessage((message: string) => {
-      console.log('Message from server:', message);      
-    }); */
   }
 
- /*  sendMessage() {
-    console.log('Sending message to server');
-    this.webSocketService.sendMessage('Hello from Angular!');
-  } */
+
 
   ngOnDestroy() {
     this.webSocketService.disconnect();
@@ -98,16 +90,4 @@ export class PhaserGameComponent implements OnInit,AfterViewInit,OnDestroy {
       }
     }
   }
-  ngAfterViewInit(): void {
-    const gameContainer = document.querySelector('.game-container')as HTMLElement;
-    if (gameContainer) {
-    
-     /*  console.log(this.cv); */
-      setTimeout(() => {
-       /*  console.log(this.cv); */
-       initializeGame(gameContainer, this.cv);
-      }, 500);
   }
-}}
-
-
