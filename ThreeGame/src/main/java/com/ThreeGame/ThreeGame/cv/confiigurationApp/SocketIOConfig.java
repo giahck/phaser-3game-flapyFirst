@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import com.corundumstudio.socketio.namespace.Namespace;
 
 @Configuration
 public class SocketIOConfig {
@@ -44,7 +45,8 @@ public class SocketIOConfig {
         });
 
         SocketIOServer server = new SocketIOServer(config);
-        server.addListeners(socketIOEventListener);
+	     Namespace namespace = (Namespace) server.addNamespace("/socket.io/");
+        namespace.addListeners(socketIOEventListener);
         server.start();
      /*   server.addEventListener("message", String.class, new DataListener<String>() {
             @Override

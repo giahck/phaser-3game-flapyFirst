@@ -40,7 +40,7 @@ public class Config {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://192.168.1.12/api","https://giahck.it/", "https://www.giahck.it/api"));
+        config.setAllowedOrigins(List.of("http://192.168.1.12/api","https://giahck.it/", "https://www.giahck.it/"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         source.registerCorsConfiguration("/**", config);

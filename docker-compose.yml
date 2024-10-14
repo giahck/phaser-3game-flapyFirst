@@ -6,6 +6,7 @@ services:
       context: ./ThreeGame
     ports:
       - "8080:8080"
+      - "9092:9292"
     volumes:
       - ./ThreeGame/env.properties:/app/env.properties
 
@@ -27,6 +28,9 @@ services:
       - ./phaser-JsToAngular-3game/dist:/usr/share/nginx/html
       - ./fullchain.pem:/etc/letsencrypt/live/giahck.it/fullchain.pem:ro  # Certificato SSL
       - ./privkey.pem:/etc/letsencrypt/live/giahck.it/privkey.pem:ro
+      - ./dhparam.pem:/etc/letsencrypt/live/giahck.it/dhparam.pem:ro
+      - ./nginx-logs/access.log:/var/log/nginx/access.log  # Log di accesso
+      - ./nginx-logs/error.log:/var/log/nginx/error.log
     depends_on:
       - frontend
       - backend
