@@ -12,6 +12,7 @@ import com.ThreeGame.ThreeGame.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class UserService {
     public LoginRDto getVerifyToken(int id, String token) {
         Users user = getUserById(id);
         LoginRDto loginRDto = userMapper.toLoginRDto(user);
-        loginRDto.setAccessToken(token);
+        loginRDto.setJwToken(token);
         return loginRDto;
         }
     public LoginRDto login(LoginDto loginDto) {
@@ -57,7 +58,7 @@ public class UserService {
                     userRepository.save(user);
                 }*/
                 LoginRDto loginRDto = userMapper.toLoginRDto(user);
-                loginRDto.setAccessToken(jwtTool.createToken(user));
+                loginRDto.setJwToken(jwtTool.createToken(user));
 
                 return loginRDto;
 
@@ -68,7 +69,7 @@ public class UserService {
             throw new ResourceNotFoundException("Utente con email " + loginDto.getEmail() + "non trovato ");
         }
     }
-
+    @Transactional
     public Users getUserById(int id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Utente non trovato con id: " + id));
     }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,13 +33,14 @@ public class AuthController {
 
     @GetMapping("/api/auth/url")
     public ResponseEntity<UrlDto> auth() {
+      /*  System.out.println("Google OAuth2");*/
         String url = new GoogleAuthorizationCodeRequestUrl(clientId,
-                "http://192.168.1.123:4200",
+                "http://localhost:4200",
                 Arrays.asList(
                         "email",
                         "profile",
                         "openid")).build();
-
+       /* System.out.println(url);*/
         return ResponseEntity.ok(new UrlDto(url));
     }
 
@@ -46,7 +48,7 @@ public class AuthController {
 
     @GetMapping("/api/auth/callback")
     public ResponseEntity<TokenDto> callback(@RequestParam("code") String code) throws URISyntaxException {
-
+       /* System.out.println("Google OAuth23");*/
         try {
             // Effettua la richiesta per ottenere i token
             GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(
@@ -55,14 +57,16 @@ public class AuthController {
                     clientId,
                     clientSecret,
                     code,
-                    "http://192.168.1.123:4200"
-            ).execute();
-
+                    "http://localhost:4200")
+                    /*"http://localhost:4200")*/
+                   /* .set("device_id", UUID.randomUUID().toString())
+                    .set("device_name", "gianluca")*/
+                    .execute();
             // Ottieni sia l'access token che l'ID token
             String accessToken = tokenResponse.getAccessToken();
             String idToken = tokenResponse.getIdToken();  // Ottieni l'ID token (JWT)
 
-            // Puoi scegliere di restituire entrambi i token o solo l'ID token
+
             return ResponseEntity.ok(new TokenDto(idToken,accessToken));
 
         } catch (IOException e) {

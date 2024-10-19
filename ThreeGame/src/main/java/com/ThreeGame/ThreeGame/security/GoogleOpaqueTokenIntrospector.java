@@ -22,7 +22,7 @@ public class GoogleOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
-        System.out.println("Google OAuth2");
+       /* System.out.println("Google OAuth2");*/
 
         return userInfoClient.get()
                 .uri(uriBuilder -> uriBuilder

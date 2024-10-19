@@ -4,8 +4,8 @@ import { PhaserGameComponent } from '../phaser-game/phaser-game.component';
 import { HomeComponent } from './home.component';
 
 const routes: Routes = [
+  { path: '', component: HomeComponent } ,
   { path: 'phaser-game', component: PhaserGameComponent }, 
-  { path: '', component: HomeComponent } 
 ];
 
 @NgModule({

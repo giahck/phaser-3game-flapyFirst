@@ -5,7 +5,8 @@ target/
 ThreeGame/env.properties
 ThreeGame/src/main/resources/application.properties
 node_modules/
-
+nginx-logs/
+.angular
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
@@ -51,7 +52,8 @@ phaser-JsToAngular-3game/privkey.pem
 phaser-JsToAngular-3game/fullchain.pem
 phaser-JsToAngular-3game/dhparam.pem
 ### Api ###
-phaser-JsToAngular-3game/src/environments/
+phaser-JsToAngular-3game/src/environments/environment.development.ts
+phaser-JsToAngular-3game/src/environments/environment.ts
 phaser-JsToAngular-3game/src/app/service/websocket.service.ts
 
 tsconfig.app.json

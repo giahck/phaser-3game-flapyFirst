@@ -8,7 +8,7 @@ import Multiplayer from "./scenes/Multiplayer";
 import { pipe } from "rxjs";
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 800;
 const WIDTH = isMobile ? window.innerWidth-50 : 800;
-console.log(`Larghezza dello schermo: ${WIDTH}`);
+/* console.log(`Larghezza dello schermo: ${WIDTH}`); */
 const HEIGHT = 600;
 const BIRD_POSITION = { x: WIDTH * 0.1, y: HEIGHT / 2 };
 const SHARED_CONFIG = {
