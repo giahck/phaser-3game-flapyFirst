@@ -6,7 +6,9 @@ import PreloadScene from "./scenes/PreloadScene";
 import PauseScene from "./scenes/PauseScene";
 import Multiplayer from "./scenes/Multiplayer";
 import { pipe } from "rxjs";
-const WIDTH = window.innerWidth < 850 ? 640 : 800;
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 800;
+const WIDTH = isMobile ? window.innerWidth-50 : 800;
+/* console.log(`Larghezza dello schermo: ${WIDTH}`); */
 const HEIGHT = 600;
 const BIRD_POSITION = { x: WIDTH * 0.1, y: HEIGHT / 2 };
 const SHARED_CONFIG = {
@@ -17,7 +19,7 @@ const SHARED_CONFIG = {
 const Scenes = [PreloadScene, MenuScene,Multiplayer, ScoreScene, PlayScene, PauseScene];
 const createScenes = (Scene, cv) => new Scene(SHARED_CONFIG, cv);
 const initScenes = (cv) => Scenes.map((Scene) => createScenes(Scene, cv));
-
+let multiplayerSceneForWeb;
 let gameInstance = null;
 export function initializeGame(container, cv) {
   cleanupGame();
@@ -34,18 +36,24 @@ export function initializeGame(container, cv) {
       },
     },
     scene: initScenes(cv),
+    callbacks: {
+      postBoot: (game) => {
+        multiplayerSceneForWeb = game.scene.getScene('Multiplayer');
+      }
+    }
   };
 
   gameInstance = new Phaser.Game(config);
+
 }
 export function cleanupGame() {
   if (gameInstance) {
     //console.log("cleanupGame");
+    multiplayerSceneForWeb.shutdown()
     gameInstance.destroy(true);
     gameInstance = null;
   }
 }
-
 /* const VELOCITY = 200; 
  const PIPES_TO_RENDER = 4;
   let bird = null;

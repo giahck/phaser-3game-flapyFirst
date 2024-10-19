@@ -5,10 +5,9 @@ import { YRoutingModule } from './y-routing.module';
 
 
 
+
 @NgModule({
-  declarations: [
- 
-    ],
+  declarations: [],
     imports: [
       CommonModule,
       YRoutingModule,

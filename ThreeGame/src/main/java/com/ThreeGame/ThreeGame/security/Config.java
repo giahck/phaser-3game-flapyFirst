@@ -36,11 +36,11 @@ public class Config {
     private final JwtFilter jwtFilter;
     @Bean
     public CorsFilter corsFilter() {
-	System.out.println("build ok ");
+	/*System.out.println("build ok ");*/
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://192.168.1.12/api","https://giahck.it/", "https://www.giahck.it/api"));
+        config.setAllowedOrigins(List.of("http://localhost:4200", "http://192.168.1.19:4200/","https://giahck.it/", "https://www.giahck.it/"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         source.registerCorsConfiguration("/**", config);
@@ -55,7 +55,7 @@ public class Config {
                 .exceptionHandling(customizer -> customizer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/api/auth/**", "/public/**", "/users/**", "/cv/**").permitAll()
+                        .requestMatchers("/", "/api/auth/**", "/api/messages/**", "/public/**", "/users/**", "/cv/**").permitAll()
                         .anyRequest().authenticated()
                 )
                // .oauth2ResourceServer(c -> c.opaqueToken(Customizer.withDefaults()))

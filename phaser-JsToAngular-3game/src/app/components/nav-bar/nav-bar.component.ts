@@ -1,7 +1,12 @@
+
 import { Component, OnInit } from '@angular/core';
 import feather from 'feather-icons';
 import { AuthService } from '../../auth/auth.service';
-import { RouterModule } from '@angular/router';
+import { NavigationStart, Router, RouterModule } from '@angular/router';
+import { WebsocketService } from '../../service/websocket.service';
+import { Subscription } from 'rxjs';
+import { cleanupGame } from '../phaser-game/js/game';
+import { cleanupGameDino } from '../phaser-game/jsDino/gameDino';
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
@@ -10,9 +15,15 @@ import { RouterModule } from '@angular/router';
   styleUrl: './nav-bar.component.scss'
 })
 export class NavBarComponent implements OnInit {
-  constructor(private authSrv: AuthService) { }
+  private routerSubscription!: Subscription;
+  constructor(private authSrv: AuthService,private webSocketService: WebsocketService, private router: Router) { }
   ngOnInit(): void {
-    
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        cleanupGame();
+        cleanupGameDino();
+      }
+    });
   }
   closeMenu() {
     const toggle = document.getElementById('menu-toggle') as HTMLInputElement;
@@ -22,6 +33,11 @@ export class NavBarComponent implements OnInit {
   }
   logout(){
     this.authSrv.logout();
+  }
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
   
 }
