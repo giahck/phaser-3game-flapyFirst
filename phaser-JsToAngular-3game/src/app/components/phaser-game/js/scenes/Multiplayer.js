@@ -13,11 +13,6 @@ class Multiplayer extends BaseScene {
       this.onMessage = null;
       this.onMessageListener = null;
     }
-     getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
    
     create(){
         super.create();
@@ -29,7 +24,7 @@ class Multiplayer extends BaseScene {
     }
 
     initWebSocket(){
-      const token = localStorage.getItem('accessToken') || this.getCookie('accessToken');
+      const token = localStorage.getItem('jwToken') || sessionStorage.getItem('jwToken');
       this.webSocketService.init(token).then((clientInfo) => {
         if (clientInfo === null) {
           this.visualaStanza();

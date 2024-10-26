@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 .error-container {
-  height: 30px; /* Altezza riservata per i messaggi di errore */
+  height: 20px; /* Altezza riservata per i messaggi di errore */
 }
 
 .error-container small {
@@ -55,7 +55,7 @@ button {
   color: #FFFFFF;
  /*  font-size: 12px; */
   font-weight: bold;
-  padding: 12px 45px;
+  padding:9px 20px;
   letter-spacing: 1px;
   text-transform: uppercase;
   transition: transform 80ms ease-in;
@@ -80,16 +80,20 @@ form {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 0 50px;
+  padding: 0 20px;
   height: 100%;
   text-align: center;
 }
-
+@media (min-width: 600px) {
+  form {
+    padding: 0 50px;
+  }
+}
 input {
   background-color: #eee;
   border: none;
   padding: 12px 15px;
-  margin: 8px 0;
+  margin: 12px 0;
   width: 100%;
 }
 
@@ -104,10 +108,18 @@ input {
   max-width: 100%;
   min-height: 95vh;
 }
+@media (min-width: 1200px) {
+  .container {
+    margin-top: 50px;
+    width: 75%;
+    min-height: 75vh;
+    
+  }
+}
 @media (max-width: 480px) {
   .container {
     width: 100%;
-    min-height: 100vh;
+    min-height: 88vh;
     border-radius: 0;
   }
 }
@@ -121,7 +133,7 @@ input {
 
 .sign-in-container {
   left: 0;
-  width: 50%;
+  width: 75%;
   z-index: 2;
 }
 
@@ -130,8 +142,8 @@ input {
 }
 
 .sign-up-container {
-  left: 0;
-  width: 50%;
+  left: -50%;  
+  width: 75%;
   opacity: 0;
   z-index: 1;
 }
@@ -158,8 +170,8 @@ input {
 .overlay-container {
   position: absolute;
   top: 0;
-  left: 50%;
-  width: 50%;
+  left: 75%;
+  width: 25%;
   height: 100%;
   overflow: hidden;
   transition: transform 0.6s ease-in-out;
@@ -167,7 +179,7 @@ input {
 }
 
 .container.right-panel-active .overlay-container{
-  transform: translateX(-100%);
+  transform: translateX(-300%);
 }
 
 .overlay {
@@ -202,11 +214,11 @@ input {
   height: 100%;
   width: 50%;
   transform: translateX(0);
-  transition: transform 0.6s ease-in-out;
+  transition: transform 2s ease-in-out;
 }
 
 .overlay-left {
-  transform: translateX(-20%);
+  transform: translateX(-50%);
 }
 
 .container.right-panel-active .overlay-left {
@@ -233,7 +245,7 @@ input {
   justify-content: center;
   align-items: center;
   margin: 0 5px;
-  height: 40px;
-  width: 40px;
+  height: 20px;
+  width: 30px;
 }
 

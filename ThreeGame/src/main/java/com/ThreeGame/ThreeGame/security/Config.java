@@ -55,7 +55,7 @@ public class Config {
                 .exceptionHandling(customizer -> customizer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/api/auth/**", "/api/messages/**", "/public/**", "/users/**", "/cv/**").permitAll()
+                        .requestMatchers("/", "/api/auth/**", "/api/messages/**", "/public/**", "/users/**").permitAll()
                         .anyRequest().authenticated()
                 )
                // .oauth2ResourceServer(c -> c.opaqueToken(Customizer.withDefaults()))

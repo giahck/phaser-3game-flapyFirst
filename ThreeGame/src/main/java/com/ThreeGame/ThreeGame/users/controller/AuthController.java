@@ -35,17 +35,13 @@ public class AuthController {
     public ResponseEntity<UrlDto> auth() {
       /*  System.out.println("Google OAuth2");*/
         String url = new GoogleAuthorizationCodeRequestUrl(clientId,
-                "http://localhost:4200",
+                "https://giahck.it",
                 Arrays.asList(
                         "email",
                         "profile",
                         "openid")).build();
        /* System.out.println(url);*/
         return ResponseEntity.ok(new UrlDto(url));
-    }
-
-
-
     @GetMapping("/api/auth/callback")
     public ResponseEntity<TokenDto> callback(@RequestParam("code") String code) throws URISyntaxException {
        /* System.out.println("Google OAuth23");*/
@@ -57,7 +53,7 @@ public class AuthController {
                     clientId,
                     clientSecret,
                     code,
-                    "http://localhost:4200")
+                    "https://giahck.it")
                     /*"http://localhost:4200")*/
                    /* .set("device_id", UUID.randomUUID().toString())
                     .set("device_name", "gianluca")*/
@@ -76,3 +72,5 @@ public class AuthController {
     }
 
 }
+
+    }
