@@ -4,13 +4,13 @@ Benvenuti nel mio progetto innovativo, che unisce il mondo del lavoro e del gami
 
 ## 🔧 **Tecnologie Utilizzate**
 - **Backend**: Java Spring boot
-  -**MICROSERVIZi**:RabbitMQ: 
+  -**MICROSERVIZi**: RabbitMQ: 
   -**Basato su Jwt Token**:oauth 2.0 google e locale : 
 - **Frontend**: Angular
   - **Flappy Bird**: JavaScript nativo (con Phaser framework)
   - **Dino**: TypeScript (con Phaser framework)
 - **Multiplayer**: Gestito tramite **Socket.io**
-- **Database**: **Postgres**,**MongoDb** presto migrato su **AWS Cloud** per garantire scalabilità e affidabilità.
+- **Database**: **Postgres**,**MongoDb** migrato su **AWS Cloud** per garantire scalabilità e affidabilità.
 - **Docker**: sia nello sviluppo che nel server Fedora
 - 
 ## 💡 **Descrizione del Progetto**
