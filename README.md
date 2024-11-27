@@ -3,16 +3,16 @@
 Benvenuti nel mio progetto innovativo, che unisce il mondo del lavoro e del gaming! 🎯
 
 ## 🔧 **Tecnologie Utilizzate**
-- **Backend**: Java Spring boot
-  -**MICROSERVIZi**: RabbitMQ: 
-  -**Basato su Jwt Token**:oauth 2.0 google e locale : 
+- **Backend**: Java Spring Boot
+  - **Microservizi**: RabbitMQ
+  - **Autenticazione basata su JWT**: OAuth 2.0 (Google e locale)
 - **Frontend**: Angular
   - **Flappy Bird**: JavaScript nativo (con Phaser framework)
   - **Dino**: TypeScript (con Phaser framework)
 - **Multiplayer**: Gestito tramite **Socket.io**
 - **Database**: **Postgres**,**MongoDb** migrato su **AWS Cloud** per garantire scalabilità e affidabilità.
 - **Docker**: sia nello sviluppo che nel server Fedora
-- 
+  
 ## 💡 **Descrizione del Progetto**
 
 Questa piattaforma offre ai candidati l'opportunità di caricare il proprio **Curriculum Vitae** in un formato unico e interattivo. Il CV diventa parte di un gioco: i recruiter possono sfogliare il tuo curriculum mentre giocano a diversi giochi, attualmente **Flappy Bird** e **Dino**, con la possibilità di giocare anche in modalità **multiplayer**!
