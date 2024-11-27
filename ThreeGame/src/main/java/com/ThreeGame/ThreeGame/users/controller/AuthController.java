@@ -23,7 +23,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-/*ddd*/
+    /*ddd*/
     @Value("${spring.security.oauth2.resourceserver.opaque-token.client-id}")
     private String clientId;
 
@@ -33,18 +33,22 @@ public class AuthController {
 
     @GetMapping("/api/auth/url")
     public ResponseEntity<UrlDto> auth() {
-      /*  System.out.println("Google OAuth2");*/
+        /*  System.out.println("Google OAuth2");*/
         String url = new GoogleAuthorizationCodeRequestUrl(clientId,
                 "https://giahck.it",
                 Arrays.asList(
                         "email",
                         "profile",
                         "openid")).build();
-       /* System.out.println(url);*/
+        /* System.out.println(url);*/
         return ResponseEntity.ok(new UrlDto(url));
+    }
+
+
+
     @GetMapping("/api/auth/callback")
     public ResponseEntity<TokenDto> callback(@RequestParam("code") String code) throws URISyntaxException {
-       /* System.out.println("Google OAuth23");*/
+        /* System.out.println("Google OAuth23");*/
         try {
             // Effettua la richiesta per ottenere i token
             GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(
@@ -53,10 +57,10 @@ public class AuthController {
                     clientId,
                     clientSecret,
                     code,
-                    "https://giahck.it")
+                    "http://localhost:4200")
                     /*"http://localhost:4200")*/
-                   /* .set("device_id", UUID.randomUUID().toString())
-                    .set("device_name", "gianluca")*/
+                    /* .set("device_id", UUID.randomUUID().toString())
+                     .set("device_name", "gianluca")*/
                     .execute();
             // Ottieni sia l'access token che l'ID token
             String accessToken = tokenResponse.getAccessToken();
@@ -72,5 +76,3 @@ public class AuthController {
     }
 
 }
-
-    }
