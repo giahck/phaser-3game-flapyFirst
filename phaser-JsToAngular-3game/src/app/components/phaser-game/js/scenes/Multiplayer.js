@@ -13,15 +13,10 @@ class Multiplayer extends BaseScene {
       this.onMessage = null;
       this.onMessageListener = null;
     }
-     getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
    
     create(){
         super.create();
-        this.add.text(this.config.width / 2, 50, 'LOBY ', { fontSize: '60px', fill: '#516E44',fontFamily: "Bangers, system-ui" }).setOrigin(0.5);
+        this.add.text(this.config.width / 2, 50, 'LOBBY ', { fontSize: '60px', fill: '#516E44',fontFamily: "Bangers, system-ui" }).setOrigin(0.5);
         this.initWebSocket();
         this.playButton();
         this.createCountdownText();
@@ -29,7 +24,7 @@ class Multiplayer extends BaseScene {
     }
 
     initWebSocket(){
-      const token = localStorage.getItem('accessToken') || this.getCookie('accessToken');
+      const token = localStorage.getItem('jwToken') || sessionStorage.getItem('jwToken');
       this.webSocketService.init(token).then((clientInfo) => {
         if (clientInfo === null) {
           this.visualaStanza();

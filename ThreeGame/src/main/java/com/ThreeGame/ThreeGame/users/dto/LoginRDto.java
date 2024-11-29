@@ -16,7 +16,8 @@ public class LoginRDto {
     private String email;
     private Boolean enabled;
     private Boolean rememberMe;
-    private String accessToken;
+    private String jwToken;
+
 
     @Enumerated(EnumType.STRING)
     private Ruolo ruolo;

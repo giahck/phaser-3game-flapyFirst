@@ -5,7 +5,8 @@ export interface AuthData {
     email: string;
     enabled: boolean;
     rememberMe: boolean;
-    accessToken: string;
+    idToken?: string;
+    jwToken: string;
     ruolo: string;
 }
 export class Token {

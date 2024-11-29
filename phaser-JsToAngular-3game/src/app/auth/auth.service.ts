@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private apiURL = environment.apiURL;
    authChecked$ = new BehaviorSubject<boolean>(false);
-  private authSub = new BehaviorSubject<AuthData | null>(null);
+  public authSub = new BehaviorSubject<AuthData | null>(null);
   user$ = this.authSub.asObservable();
   userId$: Observable<number | null> = this.authSub.pipe(
     map(user => user ? user.id : null)
@@ -23,7 +23,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private cookieService: CookieService,
+    /* private cookieService: CookieService, */
     private router: Router
   ) {}
 
@@ -35,27 +35,27 @@ export class AuthService {
   get(url: string): Observable<any> {
     return this.http.get(this.apiURL + url);
   }
-  getToken(code: string): Observable<boolean> {
-    return this.http.get<Token>(`${this.apiURL}/auth/callback?code=${code}`, { observe: 'response' })
+ getToken(code: string): Observable<boolean> {
+  //   console.log('Token Request:', code);
+    return this.http.get<Token>(`${this.apiURL}auth/callback?code=${code}`, { observe: 'response' })
       .pipe(
         map((response: HttpResponse<Token>) => {
+      //    console.log('Token Response:', response);
           if (response.status === 200 && response.body) {
             const { idToken, accessToken } = response.body;
-
-            console.log('Token Response:', response);
-
+  
             if (this.isJwt(idToken)) {
-              localStorage.setItem('accessToken', idToken);
-              this.cookieService.set('accessToken', idToken);
-
-              this.http.get<AuthData>('http://localhost:8080/messages', {
+              localStorage.setItem('jwToken', accessToken);
+              localStorage.setItem('accessTokenId', idToken);
+              this.http.get<AuthData>(`${this.apiURL}messages`, {
                 headers: new HttpHeaders({ 'Authorization': `Bearer ${accessToken}` }),
                 observe: 'response'
               }).subscribe((messageResponse: HttpResponse<AuthData>) => {
                 if (messageResponse.body) {
+                  console.log('Message Response:', messageResponse.body);
+                  messageResponse.body.idToken = idToken;
                   this.authSub.next(messageResponse.body);
-                  messageResponse.body.accessToken = accessToken;
-                  
+                  this.authChecked$.next(true);
                   this.autoLogout(messageResponse.body);
                 } else {
                   console.error('Message response body is null.');
@@ -63,7 +63,7 @@ export class AuthService {
               }, error => {
                 console.error('Error Status Code:', error.status);
               });
-
+  
               return true;
             } else {
               console.error('ID Token non valido:', idToken);
@@ -77,15 +77,17 @@ export class AuthService {
           console.error('Token Request Error:', error);
           return throwError(false);
         })
-      );
+      ); 
   }
 
   login(data: { email: string; password: string; rememberMe: boolean }): Observable<AuthData> {
     return this.http.post<AuthData>(`${this.apiURL}auth/login`, data).pipe(
       tap((dataResponse) => {
-        if (dataResponse && dataResponse.accessToken) {
-          this.setToken(dataResponse.accessToken, dataResponse.rememberMe);
+        if (dataResponse && dataResponse.jwToken) {
+       //   console.log('Login:', dataResponse);
+          this.setToken(dataResponse.jwToken, dataResponse.rememberMe);
           this.authSub.next(dataResponse);
+          this.authChecked$.next(true);
           this.autoLogout(dataResponse);
         }
       }),
@@ -100,30 +102,45 @@ export class AuthService {
   }
 
   autoLogout(user: AuthData | null) {
-    if (user && this.isJwt(user.accessToken)) {
+    if (user && this.isJwt(user.jwToken)) {
     //  console.log('Auto logout:', user);
-      const expirationDate = this.jwtHelper.getTokenExpirationDate(user.accessToken) as Date;
+      const expirationDate = this.jwtHelper.getTokenExpirationDate(user.jwToken) as Date;
       const millisecondsExp = expirationDate.getTime() - new Date().getTime();
       this.timeOut = setTimeout(() => this.logout(), millisecondsExp);
-    } else {
-      console.error('User data is null or token is not JWT.');
-    }
+    } else if(user && user.idToken && this.isIdJwt(user.idToken)) {
+      const expirationDate = this.jwtHelper.getTokenExpirationDate(user.idToken) as Date;
+      const millisecondsExp = expirationDate.getTime() - new Date().getTime();
+      this.timeOut = setTimeout(() => this.logout(), millisecondsExp);
+    }else
+    console.error('User data is null or token is not JWT.');
   }
 
   async restoreAuth(): Promise<void> {
-    const accessToken = localStorage.getItem('accessToken') || this.cookieService.get('accessToken');
+    if (this.authChecked$.getValue()) {
+      return;
+    }
+    const accessToken = localStorage.getItem('jwToken')|| sessionStorage.getItem('jwToken');
+    const accessTokenId = localStorage.getItem('accessTokenId')|| sessionStorage.getItem('accessTokenId');
     if (accessToken && this.isJwt(accessToken) && !this.jwtHelper.isTokenExpired(accessToken)) {
       try {
         await this.validateToken(accessToken);
         this.getId;
       } catch (error) {
-        this.router.navigate(['/home'])
+        this.router.navigate(['/'])
         console.warn('Errore durante la validazione del token:', error);
       }
-    } else {
-      this.router.navigate(['/home'])
+    } else if(accessToken&&accessTokenId && this.isIdJwt(accessTokenId) && !this.jwtHelper.isTokenExpired(accessTokenId)) {
+        try {
+          await this.validateToken(accessToken);
+          this.getId;
+        } catch (error) {
+          this.router.navigate(['/'])
+          console.warn('Errore durante la validazione del token:', error);
+        }
+    }else
+    {      this.router.navigate(['/'])
       console.warn('Token non JWT rilevato o token scaduto');
-      this.authChecked$.next(true);
+      this.authChecked$.next(false);
     }
   }
 
@@ -131,16 +148,16 @@ export class AuthService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     try {
       const dataResponse = await this.http.get<AuthData>(`${this.apiURL}auth/validate-token`, { headers }).toPromise();
-      if (dataResponse && dataResponse.accessToken) {
+      if (dataResponse && dataResponse.jwToken) {
         this.authSub.next(dataResponse);
         this.autoLogout(dataResponse);
-       // console.log('Token valido:', dataResponse);
+     //  console.log('Token valido:', dataResponse);
       }
       this.authChecked$.next(true);
     } catch (error) {
       console.error('Token non valido o errore durante la validazione:', error);
       this.removeToken();
-      this.authChecked$.next(true);
+      this.authChecked$.next(false);
       throw error;
     }
   }
@@ -148,7 +165,7 @@ export class AuthService {
   logout(): void {
     this.removeToken();
     this.authSub.next(null);
-    this.router.navigate(['/home']).then(() => {
+    this.router.navigate(['/']).then(() => {
       // Dopo la navigazione, fai il reload della pagina
       window.location.reload();
     })
@@ -174,18 +191,26 @@ export class AuthService {
 
   private setToken(token: string, rememberMe: boolean): void {
     if (rememberMe) {
-      localStorage.setItem('accessToken', token);
+      localStorage.setItem('jwToken', token);
     } else {
-      this.cookieService.set('accessToken', token);
+      sessionStorage.setItem('jwToken', token);
+      /* this.cookieService.set('accessToken', token); */
     }
   }
 
   private isJwt(token: string): boolean {
     return token.split('.').length === 3;
   }
+  private isIdJwt(token: string): boolean {
+ //   console.log('Auto logout:', token.length);
+    return token.split('.').length === 3;
+  }
 
   private removeToken(): void {
-    localStorage.removeItem('accessToken');
-    this.cookieService.delete('accessToken');
+    localStorage.removeItem('jwToken');
+    localStorage.removeItem('accessTokenId');
+    sessionStorage.removeItem('jwToken');
+    sessionStorage.removeItem('accessTokenid');
+   /*  this.cookieService.delete('accessToken'); */
   }
 }

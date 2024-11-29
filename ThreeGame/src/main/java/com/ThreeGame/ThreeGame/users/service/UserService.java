@@ -12,9 +12,14 @@ import com.ThreeGame.ThreeGame.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
+//fuck it, huck e solo un pinguino
+//i pinguini sono belli spesso piangono
+//fanno anche la pupu?
+//Ogni volta che un pinguino fa la cacca sta contribuendo
+//    in maniera decisiva all'equilibrio ecologico del suo ambiente – anche se non lo sa
 @Service
 public class UserService {
     @Autowired
@@ -28,18 +33,29 @@ public class UserService {
     private UserMapper userMapper;
 
     public LoginRDto registerUser(RegisterUserDto registerUserDto) {
-        Users user = userMapper.toEntity(registerUserDto);
-        user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
-        user.setRuolo(Ruolo.USER);
-        user.setRememberMe(false);
-        user.setEnabled(false);
+        Users user = userRepository.findByEmail(registerUserDto.getEmail())
+                .map(existingUser -> {
+                    if (existingUser.getPassword() == null || existingUser.getPassword().isEmpty()) {
+                        existingUser.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
+                    }
+                    return existingUser;
+                })
+                .orElseGet(() -> {
+                    Users newUser = userMapper.toEntity(registerUserDto);
+                    newUser.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
+                    newUser.setRuolo(Ruolo.USER);
+                    newUser.setRememberMe(false);
+                    newUser.setEnabled(false);
+                    return newUser;
+                });
+
         userRepository.save(user);
         return userMapper.toLoginRDto(user);
     }
     public LoginRDto getVerifyToken(int id, String token) {
         Users user = getUserById(id);
         LoginRDto loginRDto = userMapper.toLoginRDto(user);
-        loginRDto.setAccessToken(token);
+        loginRDto.setJwToken(token);
         return loginRDto;
         }
     public LoginRDto login(LoginDto loginDto) {
@@ -57,7 +73,7 @@ public class UserService {
                     userRepository.save(user);
                 }*/
                 LoginRDto loginRDto = userMapper.toLoginRDto(user);
-                loginRDto.setAccessToken(jwtTool.createToken(user));
+                loginRDto.setJwToken(jwtTool.createToken(user));
 
                 return loginRDto;
 
@@ -68,7 +84,7 @@ public class UserService {
             throw new ResourceNotFoundException("Utente con email " + loginDto.getEmail() + "non trovato ");
         }
     }
-
+    @Transactional
     public Users getUserById(int id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Utente non trovato con id: " + id));
     }

@@ -34,6 +34,7 @@ export class HomeComponent implements OnInit,OnDestroy {
     });
     this.route.queryParams
     .subscribe(params => {
+      console.log(params);
       if (params["code"] !== undefined) {
         this.authSrv.getToken(params["code"]).subscribe(result => {
          console.log(result);

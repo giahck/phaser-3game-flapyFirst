@@ -1,11 +1,14 @@
 package com.ThreeGame.ThreeGame.soketIo;
 
+import com.ThreeGame.ThreeGame.centralizze.restScore.dto.ScoreDto;
+import com.ThreeGame.ThreeGame.centralizze.serviceRabit.ScorePublisher;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,7 +20,8 @@ public class SocketIOEventListener {
     private final ControlStanza controlStanza = new ControlStanza();
     @Setter
     private long id;
-
+    @Autowired
+    private ScorePublisher scorePublisher;
     @OnConnect
     public void onConnect(SocketIOClient client) {
 
@@ -57,8 +61,9 @@ public class SocketIOEventListener {
     }
 
     @OnEvent("morto")
-    public synchronized void onMorto(SocketIOClient client, ClientInfo clientInfo) {
+    public synchronized void onMorto(SocketIOClient client, ClientInfo clientInfo, ScoreDto scoreDto) {
         /* stampa();*/
+        System.out.println(scoreDto);
 
         clientInfo.setAttivo(true);
 
@@ -71,9 +76,11 @@ public class SocketIOEventListener {
                 List<ClientInfo> clientInfos = e.getValue().stream()
                         .map(c -> controlStanza.getClientInfo(c.getSessionId()))
                         .collect(Collectors.toList());
+
                 e.getValue().forEach(b -> b.sendEvent("infoClient", clientInfos));
             }
         });
+        scorePublisher.sendData(scoreDto);
     }
 
     public void stampa() {
@@ -132,6 +139,3 @@ public class SocketIOEventListener {
             }
         }
     }*/
-
-
-

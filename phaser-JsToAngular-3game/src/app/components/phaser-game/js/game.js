@@ -6,7 +6,9 @@ import PreloadScene from "./scenes/PreloadScene";
 import PauseScene from "./scenes/PauseScene";
 import Multiplayer from "./scenes/Multiplayer";
 import { pipe } from "rxjs";
-const WIDTH = window.innerWidth < 850 ? 640 : 800;
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 800;
+const WIDTH = isMobile ? window.innerWidth-50 : 800;
+/* console.log(`Larghezza dello schermo: ${WIDTH}`); */
 const HEIGHT = 600;
 const BIRD_POSITION = { x: WIDTH * 0.1, y: HEIGHT / 2 };
 const SHARED_CONFIG = {
@@ -15,11 +17,11 @@ const SHARED_CONFIG = {
   startPosition: BIRD_POSITION,
 };
 const Scenes = [PreloadScene, MenuScene,Multiplayer, ScoreScene, PlayScene, PauseScene];
-const createScenes = (Scene, cv) => new Scene(SHARED_CONFIG, cv);
-const initScenes = (cv) => Scenes.map((Scene) => createScenes(Scene, cv));
-
+const createScenes = (Scene, cv,score) => new Scene(SHARED_CONFIG, cv,score);
+const initScenes = (cv,score) => Scenes.map((Scene) => createScenes(Scene, cv,score));
+let multiplayerSceneForWeb;
 let gameInstance = null;
-export function initializeGame(container, cv) {
+export function initializeGame(container, cv,score) {
   cleanupGame();
   const config = {
     
@@ -33,19 +35,25 @@ export function initializeGame(container, cv) {
         //  debug: true
       },
     },
-    scene: initScenes(cv),
+    scene: initScenes(cv,score),
+    callbacks: {
+      postBoot: (game) => {
+        multiplayerSceneForWeb = game.scene.getScene('Multiplayer');
+      }
+    }
   };
 
   gameInstance = new Phaser.Game(config);
+
 }
 export function cleanupGame() {
   if (gameInstance) {
     //console.log("cleanupGame");
+    multiplayerSceneForWeb.shutdown()
     gameInstance.destroy(true);
     gameInstance = null;
   }
 }
-
 /* const VELOCITY = 200; 
  const PIPES_TO_RENDER = 4;
   let bird = null;

@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { WebsocketService } from '../../../../service/websocket.service'; 
-import { CookieService } from 'ngx-cookie-service';
+import { ScoreGameService } from '../../../../service/score-game.service';
+import { environment } from '../../../../../environments/environment.development'; 
+
 class BaseScene extends Phaser.Scene {
     constructor(key,config) {
       super(key);
@@ -10,15 +12,19 @@ class BaseScene extends Phaser.Scene {
       this.lineHeight = 42;
       this.fontOptions = {fontSize: `${this.fontSize}px`, fill: '#CD00FF', fontFamily: "Bangers, system-ui"};
       this.webSocketService = new WebsocketService();
-      this.cookieService = new CookieService();
+      this.scoreGameService = new ScoreGameService();
+      this.Url=environment.apiURL;
     }
     
     create(){
         this.add.image(0,0, 'sky').setOrigin(0);
-
+        
+     //   console.log('ok');
         if(this.config.canGoBack){
             this.createBackButton();
         }
+       
+
        
     }
     createBackButton(){
@@ -33,7 +39,14 @@ class BaseScene extends Phaser.Scene {
             this.webSocketService.disconnect();
         })
     }
-  
+    shutdown() {
+      console.log('Shutting down scene and disconnecting WebSocket');
+      if (this.webSocketService) {
+        this.webSocketService.disconnect();
+      } else {
+        console.error('webSocketService is undefined');
+      }
+    }
     createMenu(menu, setupMenuEvents) {
         let lastMenuPositionY = -50;
     

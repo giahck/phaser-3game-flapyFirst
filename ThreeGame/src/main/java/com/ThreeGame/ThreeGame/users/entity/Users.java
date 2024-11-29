@@ -33,7 +33,7 @@ public class Users implements UserDetails {
     @JsonIgnore
     private Cv cv;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_giochi",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -24,7 +24,7 @@ export class TokenInterceptor implements HttpInterceptor {
                     // Assicurati di non aggiungere più volte l'intestazione
                     const newReq = request.clone({
                         setHeaders: {
-                            Authorization: `Bearer ${user.accessToken}`
+                            Authorization: `Bearer ${user.jwToken}`
                         }
                     });
                   //  console.log('Request with token:', newReq);

@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PrivateController {
 
-    @GetMapping("/messages")
+    @GetMapping("api/messages")
     public ResponseEntity<LoginRDto> getUserProfile(@AuthenticationPrincipal Users currentUser, Authentication authentication) {
         // Controlla se l'utente è autenticato
+       /* System.out.println("Access token: "+currentUser);*/
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

@@ -36,8 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-	 System.out.println("Request Method: " + request.getMethod());
-        System.out.println("Request URI: " + request.getRequestURI());
+	   /*  System.out.println("Request Method: " + request.getMethod());
+        System.out.println("Request URI: " + request.getRequestURI());*/
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new UnauthorizedException("Error in authorization, token missing!");
         }
@@ -61,8 +61,9 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             // Se la validazione JWT fallisce, tentiamo di validare il token Google
             try {
+              /*  System.out.println("Google OAuth222");*/
                 OAuth2AuthenticatedPrincipal principal = googleOpaqueTokenIntrospector.introspect(accessToken);
-                System.out.println("Access Token (Google): " + accessToken);
+               /* System.out.println("Access Token (Google): " + accessToken);*/
 
                 // Cerca l'utente nel database usando l'email
                 String email = principal.getAttribute("email");
@@ -93,6 +94,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     currentUser.setRuolo(Ruolo.valueOf("USER"));
                     currentUser.setNome(given_name);
                     currentUser.setCognome(family_name);
+                    currentUser.setRememberMe(true);
                     userRepository.save(currentUser);
                 }
 
@@ -109,7 +111,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludedPaths = {"/auth/**","/api/auth/**"};
+        String[] excludedPaths = {"/api/auth/**"};
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
         for (String path : excludedPaths) {

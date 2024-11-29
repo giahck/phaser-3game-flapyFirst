@@ -19,9 +19,14 @@ export class AppComponent implements OnInit {
   constructor(private authSrv: AuthService) { }
 
   ngOnInit() {
-    this.authSrv.restoreAuth();
+    /* this.authSrv.restoreAuth(); */
     this.authSrv.user$.subscribe((user) => {
-      this.user = user;
+      if (user) {
+        this.user = user;
+      //  console.log(user);
+      }
+    /*   this.user = user; */
     });
+    /* console.log("entrato ora"); */
   }
 }
