@@ -7,6 +7,8 @@ import { Cv } from '../../models/cv/cv.interface';
 import { CvService } from '../../service/cv.service';
 import { WebsocketService } from '../../service/websocket.service';
 import { CookieService } from 'ngx-cookie-service';
+import { ScoreGameService } from '../../service/score-game.service';
+import { Score } from '../../models/gameScore/score.interface';
 @Component({
   selector: 'app-phaser-game',
   standalone: true,
@@ -17,6 +19,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class PhaserGameComponent implements OnInit,/* AfterViewInit, */OnDestroy {
   cvSubscription!: Subscription;
   cv!:Cv;
+  score!:Score;
   visibilityGame = false;
   imageClicked = false;
  
@@ -32,16 +35,22 @@ export class PhaserGameComponent implements OnInit,/* AfterViewInit, */OnDestroy
       
       // Aggiungi altre immagini qui
   ];
-  constructor(private coc:CookieService,private cvSrv:CvService,private webSocketService: WebsocketService) { }
+  constructor(private scoreGame:ScoreGameService, private coc:CookieService,private cvSrv:CvService,private webSocketService: WebsocketService) { }
 
   ngOnInit(): void {
     this.cvSrv.getCV();
+    this.scoreGame.getScore();
     this.cvSubscription=this.cvSrv.cvUser$.subscribe(
       (cv)=>{
         this.cv=cv;
-       // console.log(this.cv);
+     //   console.log(this.cv);
       }
     );
+    this.scoreGame.score$.subscribe((data)=>{
+      console.log(data);
+       this.score=data;
+  });
+
   }
 
 
@@ -74,7 +83,7 @@ export class PhaserGameComponent implements OnInit,/* AfterViewInit, */OnDestroy
   initializeSelectedGame(container: HTMLElement, game: string): void {
     
     if (game === 'initializeGame') {
-      initializeGame(container,this.cv);
+      initializeGame(container,this.cv,this.score['flappy']);
     } else if (game === 'initializeGameDino') {
       initializeGameDino(container, this.cv);
     }

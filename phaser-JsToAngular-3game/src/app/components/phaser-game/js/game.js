@@ -17,11 +17,11 @@ const SHARED_CONFIG = {
   startPosition: BIRD_POSITION,
 };
 const Scenes = [PreloadScene, MenuScene,Multiplayer, ScoreScene, PlayScene, PauseScene];
-const createScenes = (Scene, cv) => new Scene(SHARED_CONFIG, cv);
-const initScenes = (cv) => Scenes.map((Scene) => createScenes(Scene, cv));
+const createScenes = (Scene, cv,score) => new Scene(SHARED_CONFIG, cv,score);
+const initScenes = (cv,score) => Scenes.map((Scene) => createScenes(Scene, cv,score));
 let multiplayerSceneForWeb;
 let gameInstance = null;
-export function initializeGame(container, cv) {
+export function initializeGame(container, cv,score) {
   cleanupGame();
   const config = {
     
@@ -35,7 +35,7 @@ export function initializeGame(container, cv) {
         //  debug: true
       },
     },
-    scene: initScenes(cv),
+    scene: initScenes(cv,score),
     callbacks: {
       postBoot: (game) => {
         multiplayerSceneForWeb = game.scene.getScene('Multiplayer');

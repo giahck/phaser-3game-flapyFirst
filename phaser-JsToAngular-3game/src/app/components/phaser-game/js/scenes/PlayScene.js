@@ -2,9 +2,10 @@ import BaseScene from "./BaseScene";
 let PIPES_TO_RENDER = 4;
 const score$ = new Phaser.Events.EventEmitter();
 class PlayScene extends BaseScene {
-  constructor(config, cv) {
+  constructor(config, cv,scoreU) {
     super("PlayScene", config);
-  //  cv=[]
+    this.scoreU = scoreU;
+    console.log(this.scoreU);
     this.cv = cv || { esperienze: [], formazioni: [] };
     this.esperienzeFormazioni = [
       ...(this.cv.esperienze ? this.cv.esperienze.map((item) => ({ ...item, tipo: "ESPERIENZA" })) : []),
@@ -62,9 +63,10 @@ class PlayScene extends BaseScene {
     if(this.webSocketService){
       this.webSocket=true;
       this.clientInfo = this.clientInfo.filter(client => client.id !== this.clientMyInfo.id);
+      console.log(this.clientInfo);
       this.webSocketService.onMessagePlay((data) => {
         this.clientInfo = data;
-      
+      console.log(data);
         this.clientMyInfo=data.find(client => client.id === this.clientMyInfo.id);
 
         this.updateClientPositions();
@@ -89,6 +91,11 @@ class PlayScene extends BaseScene {
     this.handleInputs();
     this.subscribeToScore();
     this.listenToEvents();
+    if (this.anims.exists('fly')) {
+      this.anims.remove('fly');
+      this.anims.remove('hit');
+
+    }
     this.anims.create({
       key: "fly",
       frames: this.anims.generateFrameNumbers("bird", { start: 9, end: 15 }),
@@ -171,7 +178,7 @@ class PlayScene extends BaseScene {
   }
   countDown() {
     this.initialTime--;
-    console.log(this.initialTime);
+   // console.log(this.initialTime);
     this.countDownText.setText("Fly in: " + this.initialTime);
     if (this.initialTime <= 0) {
       this.countDownText.setText("");
@@ -219,7 +226,7 @@ class PlayScene extends BaseScene {
   }
   createScore() {
     this.score = 0;
-    const bestScore = localStorage.getItem("highScore") || 0;
+    const bestScore = this.scoreU.score || 0;
     this.scoreText = this.add.text(600, 14, `Score: ${0}  `, {
       fontSize: "32px",
       fill: "#000",
@@ -405,18 +412,25 @@ class PlayScene extends BaseScene {
     return rightMostX;
   }
   saveScore() {
-    const bestScoreText = localStorage.getItem("highScore");
+    //const bestScoreText = localStorage.getItem("highScore");
+    //console.log(this.scoreU);
+    const bestScoreText = this.scoreU.score;
     const bestScore = bestScoreText && parseInt(bestScoreText, 10);
 
     if (!bestScore || this.score > bestScore) {
-      localStorage.setItem("highScore", this.score);
+    //  localStorage.setItem("highScore", this.score);
       this.bestScoreText.setText(`Best score: ${this.score}  `);
       this.bestScoreText.setFill("#ff0000");
+      
+    /*   console.log(this.scoreU.score = this.score);
+      console.log(this.scoreU); */
+
     }
   }
   deadSoket(){
     if(this.mortoMultiplayer){
-    this.webSocketService.sendMorto(this.clientMyInfo);
+      this.scoreU.score = this.score;
+    this.webSocketService.sendMorto(this.clientMyInfo,this.scoreU);
     this.mortoMultiplayer=false;
   }
  /*  console.log(this.clientInfo); */
@@ -432,7 +446,11 @@ class PlayScene extends BaseScene {
   if(this.webSocket)
     this.deadSoket()
     else{
-
+     
+      if(this.scoreU.score<this.score){
+      this.scoreU.score = this.score;
+      this.scoreGameService.scoreSingoleGame(this.scoreU);
+    }
     this.time.addEvent({
       delay: 5000,
       callback: () => {

@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private apiURL = environment.apiURL;
    authChecked$ = new BehaviorSubject<boolean>(false);
-  private authSub = new BehaviorSubject<AuthData | null>(null);
+  public authSub = new BehaviorSubject<AuthData | null>(null);
   user$ = this.authSub.asObservable();
   userId$: Observable<number | null> = this.authSub.pipe(
     map(user => user ? user.id : null)
@@ -36,11 +36,11 @@ export class AuthService {
     return this.http.get(this.apiURL + url);
   }
  getToken(code: string): Observable<boolean> {
-     console.log('Token Request:', code);
+  //   console.log('Token Request:', code);
     return this.http.get<Token>(`${this.apiURL}auth/callback?code=${code}`, { observe: 'response' })
       .pipe(
         map((response: HttpResponse<Token>) => {
-          console.log('Token Response:', response);
+      //    console.log('Token Response:', response);
           if (response.status === 200 && response.body) {
             const { idToken, accessToken } = response.body;
   
@@ -84,7 +84,7 @@ export class AuthService {
     return this.http.post<AuthData>(`${this.apiURL}auth/login`, data).pipe(
       tap((dataResponse) => {
         if (dataResponse && dataResponse.jwToken) {
-          console.log('Login:', dataResponse);
+       //   console.log('Login:', dataResponse);
           this.setToken(dataResponse.jwToken, dataResponse.rememberMe);
           this.authSub.next(dataResponse);
           this.authChecked$.next(true);
@@ -103,7 +103,7 @@ export class AuthService {
 
   autoLogout(user: AuthData | null) {
     if (user && this.isJwt(user.jwToken)) {
-      console.log('Auto logout:', user);
+    //  console.log('Auto logout:', user);
       const expirationDate = this.jwtHelper.getTokenExpirationDate(user.jwToken) as Date;
       const millisecondsExp = expirationDate.getTime() - new Date().getTime();
       this.timeOut = setTimeout(() => this.logout(), millisecondsExp);
@@ -116,6 +116,9 @@ export class AuthService {
   }
 
   async restoreAuth(): Promise<void> {
+    if (this.authChecked$.getValue()) {
+      return;
+    }
     const accessToken = localStorage.getItem('jwToken')|| sessionStorage.getItem('jwToken');
     const accessTokenId = localStorage.getItem('accessTokenId')|| sessionStorage.getItem('accessTokenId');
     if (accessToken && this.isJwt(accessToken) && !this.jwtHelper.isTokenExpired(accessToken)) {
@@ -137,7 +140,7 @@ export class AuthService {
     }else
     {      this.router.navigate(['/'])
       console.warn('Token non JWT rilevato o token scaduto');
-      this.authChecked$.next(true);
+      this.authChecked$.next(false);
     }
   }
 
@@ -148,13 +151,13 @@ export class AuthService {
       if (dataResponse && dataResponse.jwToken) {
         this.authSub.next(dataResponse);
         this.autoLogout(dataResponse);
-       console.log('Token valido:', dataResponse);
+     //  console.log('Token valido:', dataResponse);
       }
       this.authChecked$.next(true);
     } catch (error) {
       console.error('Token non valido o errore durante la validazione:', error);
       this.removeToken();
-      this.authChecked$.next(true);
+      this.authChecked$.next(false);
       throw error;
     }
   }
@@ -199,7 +202,7 @@ export class AuthService {
     return token.split('.').length === 3;
   }
   private isIdJwt(token: string): boolean {
-    console.log('Auto logout:', token.length);
+ //   console.log('Auto logout:', token.length);
     return token.split('.').length === 3;
   }
 

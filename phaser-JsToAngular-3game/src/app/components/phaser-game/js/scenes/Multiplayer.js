@@ -16,7 +16,7 @@ class Multiplayer extends BaseScene {
    
     create(){
         super.create();
-        this.add.text(this.config.width / 2, 50, 'LOBY ', { fontSize: '60px', fill: '#516E44',fontFamily: "Bangers, system-ui" }).setOrigin(0.5);
+        this.add.text(this.config.width / 2, 50, 'LOBBY ', { fontSize: '60px', fill: '#516E44',fontFamily: "Bangers, system-ui" }).setOrigin(0.5);
         this.initWebSocket();
         this.playButton();
         this.createCountdownText();

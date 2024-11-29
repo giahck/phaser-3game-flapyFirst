@@ -96,6 +96,7 @@ public class ControlStanza {
                     playCounter.remove(roomName);
                 }
             }
+            System.out.println("i danni");
             infoClientUpdate(roomName);
         }
     }
@@ -120,7 +121,6 @@ public class ControlStanza {
                     clientInfos.add(info);
                 }
             }
-
             ClientInfo[] clientInfoArray = clientInfos.toArray(new ClientInfo[0]);
             for (SocketIOClient c : clientsInRoom) {
                 c.sendEvent("infoClient", clientInfoArray);
